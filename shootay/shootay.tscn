@@ -1,0 +1,37 @@
+[gd_scene load_steps=8 format=3 uid="uid://dk0m7l3rcqawa"]
+
+[ext_resource type="Script" uid="uid://bjredwy06qa1w" path="res://shootay/shootay.gd" id="1_d4aeq"]
+[ext_resource type="Texture2D" uid="uid://b1w0gbwdaabal" path="res://shootay/01.png" id="1_dwr3s"]
+[ext_resource type="Shader" uid="uid://cv51ksm2y24ik" path="res://shootay/shootay.gdshader" id="1_ht0ly"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b1vgx"]
+radius = 16.1245
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ht0ly"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_d4aeq"]
+noise = SubResource("FastNoiseLite_ht0ly")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d4aeq"]
+shader = ExtResource("1_ht0ly")
+shader_parameter/noiseTexture = SubResource("NoiseTexture2D_d4aeq")
+shader_parameter/instance_time_seed = 0.0
+shader_parameter/noise_seed = 0.0
+shader_parameter/src_col = Color(1, 0.5, 0.25, 1)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_d4aeq")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_b1vgx")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_d4aeq")
+texture = ExtResource("1_dwr3s")
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(40, 0)
+collide_with_areas = true
