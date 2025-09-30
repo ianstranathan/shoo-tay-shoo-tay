@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://c2eah12q8mrq"]
+
+[ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
+[ext_resource type="Script" uid="uid://b08b55lml2xwy" path="res://components/shootay_component.gd" id="2_g1dw6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
+shader = ExtResource("1_g1dw6")
+shader_parameter/t = 1.0
+
+[node name="Player" type="CharacterBody2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_yw30f")
+texture = ExtResource("1_rkbax")
+
+[node name="ShootayComponent" type="Node" parent="." node_paths=PackedStringArray("sprite")]
+script = ExtResource("2_g1dw6")
+sprite = NodePath("../Sprite2D")
+metadata/_custom_type_script = "uid://b08b55lml2xwy"
