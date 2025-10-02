@@ -1,5 +1,32 @@
-[gd_scene format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=4 format=3 uid="uid://cnjs673hgk6wm"]
+
+[ext_resource type="Script" uid="uid://dh3eb0dp4nb87" path="res://level.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://cj04j618yr5oc" path="res://wall/wall.tscn" id="2_h2yge"]
 
 [node name="Main" type="Node"]
 
 [node name="Level" type="Node2D" parent="."]
+script = ExtResource("1_0xm2m")
+
+[node name="Wall" parent="Level" instance=ExtResource("2_h2yge")]
+position = Vector2(641, 39)
+rotation = 1.47685
+scale = Vector2(-109.657, 0.217309)
+
+[node name="Wall2" parent="Level" instance=ExtResource("2_h2yge")]
+position = Vector2(160, -127)
+
+[node name="Wall3" parent="Level" instance=ExtResource("2_h2yge")]
+position = Vector2(-330, -148)
+rotation = 0.694138
+scale = Vector2(0.22869, 0.542734)
+
+[node name="Wall4" parent="Level" instance=ExtResource("2_h2yge")]
+position = Vector2(-193, 349)
+rotation = -0.951975
+scale = Vector2(0.455968, 4.43747)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("1_ig7tw")]

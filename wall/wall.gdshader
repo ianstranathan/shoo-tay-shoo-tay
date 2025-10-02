@@ -26,6 +26,6 @@ void fragment(){
 	uv.x *= dims.x / dims.y;
 	float v = sdBox(uv, vec2(0.1, 0.1));
 	v = pow(v, 0.8);
-	vec3 col = v * outline_col ;//+  0.5 * sin(2. * TIME) * v * outline_col;
-	COLOR = vec4(col, v);
+	vec3 col = v * outline_col +  0.5 * sin(2. * TIME) * v * outline_col;
+	COLOR = 0.7 * vec4(col, v);
 }
