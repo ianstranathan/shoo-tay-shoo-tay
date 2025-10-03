@@ -18,8 +18,12 @@ uniform float t: hint_range(0.0, 1.0, 0.05);
 
 uniform float is_flashing = 0.0;
 
+mat2 rot(float angle){
+	return mat2( vec2(cos(angle), -sin(angle)), vec2(sin(angle), cos(angle)));
+}
 void fragment() {
 	vec2 uv = 2. * UV - 1.;
+	uv = rot(PI / 2.0) * uv;
 	float _sdf = sdTriangleIsosceles( uv + vec2(0., 0.6 * tri_height), vec2(0.35 * tri_height, tri_height));
 
 	// -------------- regular col

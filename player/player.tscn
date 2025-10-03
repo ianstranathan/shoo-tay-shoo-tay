@@ -1,20 +1,25 @@
-[gd_scene load_steps=5 format=3 uid="uid://c2eah12q8mrq"]
+[gd_scene load_steps=7 format=3 uid="uid://c2eah12q8mrq"]
 
 [ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
 [ext_resource type="Script" uid="uid://qlxe067lrvwq" path="res://player/player.gd" id="1_yw30f"]
+[ext_resource type="Shader" uid="uid://c4a4eplt6ovbr" path="res://player/aim_visual/aim_visual.gdshader" id="4_yw30f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
 shader_parameter/t = 0.0
 shader_parameter/is_flashing = 0.0
 
-[node name="Player" type="CharacterBody2D"]
-rotation = 1.5708
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qjkh3"]
+shader = ExtResource("4_yw30f")
+shader_parameter/_scale = 1.0
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("aiming_sprite")]
 script = ExtResource("1_yw30f")
+aiming_sprite = NodePath("Sprite2D2")
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(-20, 23, 20, 23, 0, -35)
+polygon = PackedVector2Array(-24, 23, -24, -23, 35, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_yw30f")
@@ -26,3 +31,7 @@ autostart = true
 [node name="DamageFlashingTimer" type="Timer" parent="."]
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_qjkh3")
+texture = ExtResource("1_rkbax")
