@@ -32,7 +32,7 @@ void fragment() {
 	p.x = mod1(p.x, 0.8);
 	float mask = sdMoon(p, -0.25 + 0.2 * UV.x * UV.x, 0.4, 0.4);
 	float sm_mask = 1. - smoothstep(0., 0.1, mask);
-	vec3 col = vec3(0., 1., 0.) + abs(sin(UV.x - 4. * TIME));
+	vec3 col = vec3(1.0) + abs(sin(2. * UV.x - 6. * TIME));
 	col *= sm_mask;
 	float _alpha = (0.5 * _scale + 0.1) * sm_mask * mix(1., 0.1, UV.x);
 	COLOR = vec4(col, _alpha);

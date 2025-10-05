@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+class_name Player
+
 @export_category("Movement")
 var move_dir: Vector2 = Vector2.ZERO
 @export var SPEED: float = 200.0
@@ -8,20 +10,16 @@ var move_dir: Vector2 = Vector2.ZERO
 @export var aiming_sprite: Sprite2D
 @export var shooting_line_scale: float = 3.0
 @onready var tex_size :Vector2i = $Sprite2D.texture.get_size()
+@export var look_ahead_dist = 100.0
 
-
-@onready var player_sprite_tex_size: Vector2i = $Sprite2D.texture.get_size()
 # ------------------------------------
+@onready var _player_tex_size: Vector2 = $Sprite2D2.texture.get_size()
 
 var _aim_dir: Vector2 = Vector2.RIGHT
 var _last_aim_dir := _aim_dir
 
-var shootay: PackedScene = preload("res://shootay/shootay.tscn")
+var shootay_scene: PackedScene = preload("res://shootay/shootay.tscn")
 
-enum ShootayValues{
-	REFLECT,
-	TRANSMIT
-}
 
 func _ready() -> void:
 	assert(aiming_sprite)
@@ -50,6 +48,11 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if Input.is_action_just_pressed("shoot reflect"):
+		shoot_shootay(ShootayGlobals.ShootayValues.REFLECT)
+	elif Input.is_action_just_pressed("shoot transmit"):
+		shoot_shootay(ShootayGlobals.ShootayValues.TRANSMIT)
+	
 	# ---------------------------- Turn
 	var dir = _last_aim_dir.normalized();
 	var angle = Vector2.RIGHT.angle_to( dir )
@@ -64,12 +67,15 @@ func is_flashing(b: bool) -> void:
 	$Sprite2D.material.set_shader_parameter("is_flashing", 1.0 if b else 0.0)
 
 
-
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("shoot reflect"):
-		pass#shoot_shootay(ShootayValues.REFLECT)
+func look_ahead_position() -> Vector2:
+	return look_ahead_dist * _last_aim_dir.normalized()
 
 
-#func shoot_shootay(v:ShootayValues):
-	#var shootay_scene = shootay.instantiate()
-	#shootay_scene.
+func shoot_shootay(shootay_value:ShootayGlobals.ShootayValues):
+	var shootay = shootay_scene.instantiate()
+	get_tree().root.add_child(shootay)
+	# -- offset it past the player
+	shootay.global_position = (global_position + 
+							   _last_aim_dir.normalized() * _player_tex_size.x / 2.0)
+	# -- shoot
+	shootay.shoot(_last_aim_dir, shootay_value)

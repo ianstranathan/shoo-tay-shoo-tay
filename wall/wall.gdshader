@@ -5,8 +5,10 @@ float sdBox( in vec2 p, in vec2 b )
     vec2 d = abs(p)-b;
     return length(max(d,0.0)) + min(max(d.x,d.y),0.0);
 }
-const vec3 outline_col = vec3(1.0, 0.5, 0.25);
 uniform float aspect_ratio = 2.;
+
+uniform vec4 src_col: source_color =  vec4(1.0, 0.5, 0.25, 1.0);
+
 //void fragment(){
 	//vec2 uv = 2. * UV - 1.;
 	//uv.x *= aspect_ratio;
@@ -26,6 +28,6 @@ void fragment(){
 	uv.x *= dims.x / dims.y;
 	float v = sdBox(uv, vec2(0.1, 0.1));
 	v = pow(v, 0.8);
-	vec3 col = v * outline_col +  0.5 * sin(2. * TIME) * v * outline_col;
+	vec3 col = (v +  0.5 * sin(2. * TIME) * v )  *  src_col.xyz;
 	COLOR = 0.7 * vec4(col, v);
 }
