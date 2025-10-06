@@ -20,6 +20,7 @@ shader_parameter/noiseTexture = SubResource("NoiseTexture2D_d4aeq")
 shader_parameter/instance_time_seed = 0.0
 shader_parameter/noise_seed = 0.0
 shader_parameter/src_col = Color(0.401419, 0.677749, 0.986424, 1)
+shader_parameter/_st_sq = 3.0
 
 [node name="Shootay" type="Node2D"]
 script = ExtResource("1_d4aeq")

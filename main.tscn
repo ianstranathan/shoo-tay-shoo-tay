@@ -35,3 +35,7 @@ scale = Vector2(3.63075, 0.466282)
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("target")]
 script = ExtResource("4_1bvp3")
 target = NodePath("../Player")
+
+[node name="ShootShakeTimer" type="Timer" parent="Camera2D"]
+wait_time = 0.2
+one_shot = true

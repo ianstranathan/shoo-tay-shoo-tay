@@ -23,6 +23,7 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 
 	if ray.is_colliding():
+		stretch_squash( false )
 		vel = vel.bounce(ray.get_collision_normal())
 		rotation_from_velocity_vector( vel )
 		
@@ -38,6 +39,19 @@ func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	set_shootay_collision_layer()
 	vel = dir.normalized() * SHOOTING_SPEED
 	rotation_from_velocity_vector( dir )
+	stretch_squash( true )
+	GlobalSignals.emit_signal("shake_camera", {"type": "Shootay", "amount": 20, "dir": dir})
+
+
+func stretch_squash(stretch: bool) -> void:
+	var tween = create_tween()
+	if stretch:
+		Utils.shader_float_tween(tween, $Sprite2D, "_st_sq", 3.0, 1.0, 0.5, Tween.EASE_OUT, Tween.TRANS_BACK)
+	else:
+		Utils.shader_float_tween(tween, $Sprite2D, "_st_sq", 3.0, 1.0, 0.12, Tween.EASE_IN, Tween.TRANS_EXPO)
+		#tween.tween_callback( func():
+			#var _tween = create_tween()
+			#Utils.shader_float_tween(_tween, $Sprite2D, "_st_sq", 4.0, 1.0, 0.1, Tween.EASE_OUT, Tween.TRANS_EXPO))
 
 
 func rotation_from_velocity_vector(dir: Vector2):

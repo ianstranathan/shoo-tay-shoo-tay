@@ -8,7 +8,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
 shader_parameter/t = 0.0
-shader_parameter/is_flashing = 0.0
+shader_parameter/reg_col = Color(0.802958, 0.500605, 0.986108, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qjkh3"]
 shader = ExtResource("4_yw30f")
