@@ -1,0 +1,55 @@
+[gd_scene load_steps=14 format=3 uid="uid://c3a8d0aw67lm7"]
+
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_6yiqx"]
+[ext_resource type="Script" uid="uid://boho2ea5avobh" path="res://vfx/explosion.gd" id="1_jmjsj"]
+[ext_resource type="Shader" uid="uid://dkivg6misgcn4" path="res://vfx/explosion_body.gdshader" id="1_otjre"]
+[ext_resource type="Texture2D" uid="uid://uilgwob7ic0v" path="res://vfx/reusable_seamless_fastnoise_lite.tres" id="2_q8jem"]
+[ext_resource type="Shader" uid="uid://c4oyqe5whwmtq" path="res://vfx/explosion_contrast.gdshader" id="5_hawta"]
+[ext_resource type="Shader" uid="uid://c6ecjelmvrrx" path="res://vfx/explosion_flare.gdshader" id="5_vymal"]
+[ext_resource type="Texture2D" uid="uid://2y87rbfgnofr" path="res://assets/scorch_01.png" id="6_07qmm"]
+
+[sub_resource type="Gradient" id="Gradient_jmjsj"]
+offsets = PackedFloat32Array(0, 0.434426, 0.532787, 0.918033)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0.74)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_vymal"]
+gradient = SubResource("Gradient_jmjsj")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q8jem"]
+shader = ExtResource("1_otjre")
+shader_parameter/noise_tex = ExtResource("2_q8jem")
+shader_parameter/gradient_tex = SubResource("GradientTexture1D_vymal")
+shader_parameter/alpha_controller = 0.3
+shader_parameter/seed = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_otjre"]
+size = Vector2(128, 128)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_07qmm"]
+shader = ExtResource("5_hawta")
+shader_parameter/alpha_controller = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hawta"]
+shader = ExtResource("5_vymal")
+shader_parameter/alpha_controller = 1.0
+
+[node name="Explosion" type="Node2D"]
+script = ExtResource("1_jmjsj")
+
+[node name="body" type="MeshInstance2D" parent="."]
+material = SubResource("ShaderMaterial_q8jem")
+scale = Vector2(2, 2)
+mesh = SubResource("QuadMesh_otjre")
+texture = ExtResource("1_6yiqx")
+
+[node name="contrast" type="MeshInstance2D" parent="."]
+material = SubResource("ShaderMaterial_07qmm")
+mesh = SubResource("QuadMesh_otjre")
+texture = ExtResource("6_07qmm")
+
+[node name="flare" type="MeshInstance2D" parent="."]
+material = SubResource("ShaderMaterial_hawta")
+mesh = SubResource("QuadMesh_otjre")
+texture = ExtResource("1_6yiqx")
+
+[node name="Camera2D" type="Camera2D" parent="."]

@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dk0m7l3rcqawa"]
+[gd_scene load_steps=10 format=3 uid="uid://dk0m7l3rcqawa"]
 
 [ext_resource type="Script" uid="uid://bjredwy06qa1w" path="res://shootay/shootay.gd" id="1_d4aeq"]
 [ext_resource type="Texture2D" uid="uid://b1w0gbwdaabal" path="res://shootay/01.png" id="1_dwr3s"]
 [ext_resource type="Shader" uid="uid://cv51ksm2y24ik" path="res://shootay/shootay.gdshader" id="1_ht0ly"]
 [ext_resource type="Script" uid="uid://cexxvyi72nkrp" path="res://components/shootay_color_component.gd" id="4_vvgca"]
+[ext_resource type="Resource" uid="uid://cyyengrgctg50" path="res://components/mechanics_colors_rsc.tres" id="5_ibnxq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vvgca"]
 height = 68.0
@@ -47,5 +48,6 @@ metadata/_edit_group_ = true
 
 [node name="ShootayColorComponent" type="Node" parent="." node_paths=PackedStringArray("sprite")]
 script = ExtResource("4_vvgca")
+mechanics_color_data = ExtResource("5_ibnxq")
 sprite = NodePath("../Sprite2D")
 metadata/_custom_type_script = "uid://cexxvyi72nkrp"

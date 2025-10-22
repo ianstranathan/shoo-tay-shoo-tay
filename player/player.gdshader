@@ -15,7 +15,7 @@ float sdTriangleIsosceles( in vec2 p, in vec2 q )
 }
 const float tri_height = 0.9;
 uniform float t: hint_range(0.0, 1.0, 0.05);
-uniform vec4 reg_col: source_color;
+uniform vec4 src_col: source_color = vec4(0.4, 0.6, 0.8, 1.);
 //uniform float is_flashing = 0.0;
 
 mat2 rot(float angle){
@@ -33,7 +33,7 @@ void fragment() {
 								  //(vec4(1., 0., 0., 1.) * flashing_switch) ));
 //
 	//reg_col += flashing_switch * vec4(1., 0., 0, 0.) * sin( 30. * TIME);
-	vec4 masked_col = reg_col * (1. - smoothstep(0., 0.05, _sdf));
+	vec4 masked_col = src_col * (1. - smoothstep(0., 0.05, _sdf));
 	// -------------- glow
 	float dist = 1. / clamp(_sdf, 0.001, 1.);//mask = smoothstep(0.01, 0.04, mask);
 	float charging_alpha = pow((1. - _sdf), 4.0);

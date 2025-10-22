@@ -1,0 +1,20 @@
+[gd_scene load_steps=6 format=3 uid="uid://de13jwyebi4fd"]
+
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_cxgmm"]
+[ext_resource type="Shader" uid="uid://d5x4lw7geq54" path="res://shaders/dynamic_lightning_noise.gdshader" id="1_qvgky"]
+[ext_resource type="Texture2D" uid="uid://uilgwob7ic0v" path="res://vfx/reusable_seamless_fastnoise_lite.tres" id="2_v5ars"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v5ars"]
+shader = ExtResource("1_qvgky")
+shader_parameter/slider = 1.0
+shader_parameter/noise_tex = ExtResource("2_v5ars")
+
+[sub_resource type="QuadMesh" id="QuadMesh_qvgky"]
+size = Vector2(128, 128)
+
+[node name="TestingMesh" type="Node"]
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+material = SubResource("ShaderMaterial_v5ars")
+mesh = SubResource("QuadMesh_qvgky")
+texture = ExtResource("1_cxgmm")

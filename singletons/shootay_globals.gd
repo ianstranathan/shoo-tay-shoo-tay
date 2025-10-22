@@ -1,5 +1,6 @@
 extends Node
 
+var wrapping_buffer = 20.0 # NOTE
 
 var reflection_layer: int = 3
 var transmission_layer: int = 4

@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cscig3q1q8qpn"]
+
+[ext_resource type="FontFile" uid="uid://devv5inxdr6i5" path="res://assets/fonts/scoreboard-type-font/ScoreboardTypeItalicPersonal-nRWO0.ttf" id="1_senvt"]
+
+[resource]
+default_font = ExtResource("1_senvt")
+default_font_size = 100

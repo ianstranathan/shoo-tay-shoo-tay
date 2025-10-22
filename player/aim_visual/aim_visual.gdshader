@@ -1,6 +1,7 @@
 shader_type canvas_item;
 
 uniform float _scale: hint_range(0.0, 1.0, 0.1);
+uniform vec4 src_col: source_color = vec4(0.5);
 void vertex() {
 	// Called for every vertex the material is visible on.
 	VERTEX.x *= 3. * _scale;
@@ -32,8 +33,8 @@ void fragment() {
 	p.x = mod1(p.x, 0.8);
 	float mask = sdMoon(p, -0.25 + 0.2 * UV.x * UV.x, 0.4, 0.4);
 	float sm_mask = 1. - smoothstep(0., 0.1, mask);
-	vec3 col = vec3(1.0) + abs(sin(2. * UV.x - 6. * TIME));
+	vec3 col = vec3(1.0) + abs(sin(4. * UV.x - 6. * TIME));
 	col *= sm_mask;
-	float _alpha = (0.5 * _scale + 0.1) * sm_mask * mix(1., 0.1, UV.x);
+	float _alpha = (0.7 * _scale + 0.1) * sm_mask * mix(1., 0.1, UV.x);
 	COLOR = vec4(col, _alpha);
 }

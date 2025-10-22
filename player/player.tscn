@@ -7,31 +7,31 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
-shader_parameter/t = 0.0
-shader_parameter/reg_col = Color(0.802958, 0.500605, 0.986108, 1)
+shader_parameter/t = 0.55
+shader_parameter/src_col = Color(0, 0, 0, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qjkh3"]
 shader = ExtResource("4_yw30f")
 shader_parameter/_scale = 1.0
+shader_parameter/src_col = Color(1, 1, 1, 1)
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("aiming_sprite")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("aiming_sprite", "player_sprite")]
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_yw30f")
-aiming_sprite = NodePath("Sprite2D2")
+aiming_sprite = NodePath("AimingSprite")
+player_sprite = NodePath("PlayerSprite")
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-24, 23, -24, -23, 35, 0)
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="PlayerSprite" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_yw30f")
 texture = ExtResource("1_rkbax")
 
-[node name="OverchargeTimer" type="Timer" parent="."]
+[node name="ShootayTimer" type="Timer" parent="."]
 autostart = true
 
-[node name="DamageFlashingTimer" type="Timer" parent="."]
-
-[node name="Sprite2D2" type="Sprite2D" parent="."]
+[node name="AimingSprite" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_qjkh3")
 texture = ExtResource("1_rkbax")

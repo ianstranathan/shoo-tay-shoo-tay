@@ -10,9 +10,21 @@ var dist: float = 0.0
 @export var SHOOTING_SPEED: float = 600.0
 @onready var ray = $RayCast2D
 
+# -- NOTE
+var explosion_id: int
 
-#func _ready() -> void:
-	#$Area2D.area_entered.connect( on_area_entered )
+# -- NOTE
+var wrapping_bounds: Vector2
+
+func _ready() -> void:
+	var _b = ShootayGlobals.wrapping_buffer
+	assert( wrapping_bounds )
+	wrapping_bounds += Vector2(_b, _b)
+	
+	$Area2D.area_entered.connect( func(area: Area2D):
+		var p = area.get_parent()
+		if p is Shootay:
+			explode( p ))
 
 
 func _physics_process(delta: float) -> void:
@@ -26,7 +38,17 @@ func _physics_process(delta: float) -> void:
 		stretch_squash( false )
 		vel = vel.bounce(ray.get_collision_normal())
 		rotation_from_velocity_vector( vel )
-		
+	
+	# -- Wrapping logic
+	#if global_position.x > wrapping_bounds.x:
+		#global_position.x = -wrapping_bounds.x
+	#elif global_position.x < wrapping_bounds.x:
+		#global_position.x = wrapping_bounds.x
+	#elif global_position.y > wrapping_bounds.y:
+		#global_position.y = -wrapping_bounds.y
+	#elif global_position.y < wrapping_bounds.y:
+		#global_position.y = wrapping_bounds.y
+
 
 #func on_area_entered( area: Area2D ):
 	#if area.get_parent() is Shootay and area.get_parent().shootay_value != shootay_value:
@@ -37,7 +59,8 @@ func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	shootay_value = _shootay_val
 	$ShootayColorComponent.set_shootay_visual( shootay_value )
 	set_shootay_collision_layer()
-	vel = dir.normalized() * SHOOTING_SPEED
+	assert( is_equal_approx(dir.length(), 1.0)) # -- .normalized() should be in player to save a call
+	vel = dir * SHOOTING_SPEED                  # -- but just in case
 	rotation_from_velocity_vector( dir )
 	stretch_squash( true )
 	GlobalSignals.emit_signal("shake_camera", {"type": "Shootay", "amount": 20, "dir": dir})
@@ -84,5 +107,8 @@ func set_shootay_collision_layer():
 		#_layer == ShootayGlobals.reflection_layer):
 
 
-func explode():
-	pass
+func explode(shootay_collided_with: Shootay):
+	if (shootay_collided_with.shootay_value != shootay_value):
+		if explosion_id > shootay_collided_with.explosion_id:
+			GlobalSignals.emit_signal("shootay_exploded", global_position)
+		queue_free()

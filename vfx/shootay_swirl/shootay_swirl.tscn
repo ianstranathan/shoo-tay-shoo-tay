@@ -1,0 +1,25 @@
+[gd_scene load_steps=8 format=3 uid="uid://c65nayuysegc7"]
+
+[ext_resource type="Script" uid="uid://d3apjlc36bge5" path="res://vfx/shootay_swirl/shootay_swirl.gd" id="1_6jy6a"]
+[ext_resource type="Shader" uid="uid://cg141y8fxu688" path="res://vfx/shootay_swirl/shootay_swirl.gdshader" id="1_idan2"]
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_jovn4"]
+[ext_resource type="Texture2D" uid="uid://uilgwob7ic0v" path="res://vfx/reusable_seamless_fastnoise_lite.tres" id="2_0djuo"]
+[ext_resource type="Resource" uid="uid://cyyengrgctg50" path="res://components/mechanics_colors_rsc.tres" id="2_6jy6a"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0djuo"]
+shader = ExtResource("1_idan2")
+shader_parameter/noise_tex = ExtResource("2_0djuo")
+shader_parameter/reflect_col = Vector4(1, 0, 0, 1)
+shader_parameter/transmit_col = Vector4(0, 0, 1, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_idan2"]
+size = Vector2(128, 128)
+
+[node name="ShootaySwirl" type="Node2D"]
+script = ExtResource("1_6jy6a")
+mechanics_color_data = ExtResource("2_6jy6a")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+material = SubResource("ShaderMaterial_0djuo")
+mesh = SubResource("QuadMesh_idan2")
+texture = ExtResource("1_jovn4")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cj04j618yr5oc"]
+[gd_scene load_steps=10 format=3 uid="uid://cj04j618yr5oc"]
 
 [ext_resource type="Script" uid="uid://bq4kk2idupoin" path="res://wall/wall.gd" id="1_1w5xe"]
 [ext_resource type="Shader" uid="uid://b65iu3i8004op" path="res://wall/wall.gdshader" id="1_6wk7l"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://ba53qtln0lqb6" path="res://wall/scaling_tool_script.gd" id="4_8s4k5"]
 [ext_resource type="Script" uid="uid://b08b55lml2xwy" path="res://components/shootay_collision_component.gd" id="5_rtv6b"]
 [ext_resource type="Script" uid="uid://cexxvyi72nkrp" path="res://components/shootay_color_component.gd" id="6_k3yxg"]
+[ext_resource type="Resource" uid="uid://cyyengrgctg50" path="res://components/mechanics_colors_rsc.tres" id="7_k3yxg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qswlj"]
 size = Vector2(128, 128)
@@ -39,5 +40,6 @@ metadata/_custom_type_script = "uid://b08b55lml2xwy"
 
 [node name="ShootayColorComponent" type="Node" parent="." node_paths=PackedStringArray("sprite")]
 script = ExtResource("6_k3yxg")
+mechanics_color_data = ExtResource("7_k3yxg")
 sprite = NodePath("../Sprite2D")
 metadata/_custom_type_script = "uid://cexxvyi72nkrp"

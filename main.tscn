@@ -1,11 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=8 format=3 uid="uid://cnjs673hgk6wm"]
 
 [ext_resource type="Script" uid="uid://dh3eb0dp4nb87" path="res://level.gd" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://bgodmmno8hffy" path="res://main.gd" id="1_lquwl"]
 [ext_resource type="PackedScene" uid="uid://cj04j618yr5oc" path="res://wall/wall.tscn" id="2_h2yge"]
 [ext_resource type="Script" uid="uid://dbx6y30r5vrjs" path="res://camera/cam.gd" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://cj5le4ngvuhl6" path="res://shootay_manager.gd" id="6_7mycd"]
+[ext_resource type="Script" uid="uid://c24o054px4d8u" path="res://vfx_container.gd" id="7_272bh"]
 
-[node name="Main" type="Node"]
+[node name="Main" type="Node" node_paths=PackedStringArray("the_player", "level", "the_shootay_manager")]
+script = ExtResource("1_lquwl")
+the_player = NodePath("Player")
+level = NodePath("Level")
+the_shootay_manager = NodePath("ShootayManager")
 
 [node name="Level" type="Node2D" parent="."]
 script = ExtResource("1_0xm2m")
@@ -39,3 +46,9 @@ target = NodePath("../Player")
 [node name="ShootShakeTimer" type="Timer" parent="Camera2D"]
 wait_time = 0.2
 one_shot = true
+
+[node name="ShootayManager" type="Node2D" parent="."]
+script = ExtResource("6_7mycd")
+
+[node name="vfx_container" type="Node2D" parent="."]
+script = ExtResource("7_272bh")
