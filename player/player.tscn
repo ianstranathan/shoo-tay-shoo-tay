@@ -1,14 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://c2eah12q8mrq"]
+[gd_scene load_steps=8 format=3 uid="uid://c2eah12q8mrq"]
 
 [ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
 [ext_resource type="Script" uid="uid://qlxe067lrvwq" path="res://player/player.gd" id="1_yw30f"]
+[ext_resource type="Texture2D" uid="uid://dkr8u5nmt6ncg" path="res://assets/T_Random_23.png" id="3_qjkh3"]
 [ext_resource type="Shader" uid="uid://c4a4eplt6ovbr" path="res://player/aim_visual/aim_visual.gdshader" id="4_yw30f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
-shader_parameter/t = 0.55
-shader_parameter/src_col = Color(0, 0, 0, 1)
+shader_parameter/t = 0.0
+shader_parameter/src_col = Color(1, 0.6, 0.4, 1)
+shader_parameter/cracked_tex = ExtResource("3_qjkh3")
+shader_parameter/dmg_scale = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qjkh3"]
 shader = ExtResource("4_yw30f")
@@ -23,6 +26,7 @@ aiming_sprite = NodePath("AimingSprite")
 player_sprite = NodePath("PlayerSprite")
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
+visible = false
 polygon = PackedVector2Array(-24, 23, -24, -23, 35, 0)
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
