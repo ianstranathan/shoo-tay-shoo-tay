@@ -8,10 +8,10 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
-shader_parameter/t = 0.0
+shader_parameter/dmg_scale = 1.0
+shader_parameter/t = 1.0
 shader_parameter/src_col = Color(1, 0.6, 0.4, 1)
 shader_parameter/cracked_tex = ExtResource("3_qjkh3")
-shader_parameter/dmg_scale = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qjkh3"]
 shader = ExtResource("4_yw30f")
@@ -31,6 +31,7 @@ polygon = PackedVector2Array(-24, 23, -24, -23, 35, 0)
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_yw30f")
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("1_rkbax")
 
 [node name="ShootayTimer" type="Timer" parent="."]

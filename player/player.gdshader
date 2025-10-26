@@ -1,7 +1,12 @@
 shader_type canvas_item;
 
+uniform float dmg_scale: hint_range(0.0, 1.0, 0.25);
+uniform float t: hint_range(0.0, 1.0, 0.05);
+
 void vertex() {
-	// Called for every vertex the material is visible on.
+	float s = mix(1., 3., dmg_scale) * (sin( mix(4., 12., dmg_scale * dmg_scale) * TIME));
+	float m = mix(1., 5., dmg_scale) * (sin( mix(0., 12., t * t) * TIME));
+	VERTEX += vec2(sign(VERTEX.x), sign(VERTEX.y)) * (s + m) ;
 }
 float sdTriangleIsosceles( in vec2 p, in vec2 q )
 {
@@ -14,8 +19,7 @@ float sdTriangleIsosceles( in vec2 p, in vec2 q )
     return -sqrt(d.x)*sign(d.y);
 }
 
-const float tri_height = 0.9;
-uniform float t: hint_range(0.0, 1.0, 0.05);
+const float tri_height = 0.5;
 uniform vec4 src_col: source_color = vec4(0.4, 0.6, 0.8, 1.);
 uniform sampler2D cracked_tex: repeat_enable;
 
@@ -26,49 +30,54 @@ mat2 rot(float angle){
 	return mat2( vec2(cos(angle), -sin(angle)), vec2(sin(angle), cos(angle)));
 }
 
-uniform float dmg_scale: hint_range(0.0, 1.0, 0.25);
+
 void fragment() {
 	vec2 uv = 2. * UV - 1.;
-	
-	vec4 cracked_src = texture(cracked_tex, 3. * dmg_scale * (UV - vec2(0.5)) + vec2(0.5));
-	
-	// --
+
+
+	// -- shape sdf
 	uv = rot(PI / 2.0) * uv;
 	float _sdf = sdTriangleIsosceles( uv + vec2(0., 0.6 * tri_height), vec2(0.35 * tri_height, tri_height));
 	float shape_mask = (1. - smoothstep(0., 0.05, _sdf));
-	
-	
-	// -------------- glow
+
+
+	// -------------- overcharge glow
 	float dist = 1. / clamp(_sdf, 0.001, 1.);//mask = smoothstep(0.01, 0.04, mask);
-	float charging_alpha = pow((1. - _sdf), 4.0);
+	float charging_alpha = pow((1. - _sdf), 3.0);
 	dist *= 0.1;
 	dist = pow(dist, 0.8);
 	vec3 charging_col = dist * vec3(1.0, 0.5, 0.25);
-	
+
 	charging_col = 1.0 - exp( -charging_col );
 
-	vec4 col = mix(vec4(charging_col, shape_mask), vec4(charging_col, charging_alpha), t);
-	
-	
+
 	// Cracked glowing stuff
-	float cracked_glow_dist = 1. / ((1. - cracked_src.x) + (0.2 * (sin( mix(2., 20., dmg_scale * dmg_scale)
-	* TIME))));
+	// scaling numbers are arbitrary, just playing around to see what looks ok
+	vec4 cracked_src = texture(cracked_tex, 4. * dmg_scale * (UV - vec2(0.5)) + vec2(0.5));
+
+	// 0.5 * (sin(x) + 1)
+	// float cracked_glow_variation = 0.5 * (0.5 * (sin(mix(4., 12., dmg_scale * dmg_scale) * TIME) + 1.0))
+	//float cracked_glow_dist = 1. / ((1. - cracked_src.x) + (0.5 * (abs(sin( mix(4., 12., dmg_scale * dmg_scale) * TIME)))));
+	float cracked_glow_dist = 1. / ((1. - cracked_src.x) + (0.8 * (0.5 * (sin(mix(4., 12., dmg_scale * dmg_scale) * TIME) + 1.0))));
 	cracked_glow_dist *= 0.1;
 	cracked_glow_dist = pow(cracked_glow_dist, 0.8);
 	vec3 cracked_col = cracked_glow_dist * charging_col_src;
 	cracked_col = 1.0 - exp( -cracked_col );
-	
-	// 
-	
-	float v = (1. - dmg_scale + 0.2); // col changing with dmg
-	vec4 cracked_out_col = (v * src_col * (1. - cracked_src.x)) + 2. * step(0.1, dmg_scale) * vec4(cracked_col, cracked_src.x);
-	
-	//col.w -= cracked_out_col.w;
-	//col += cracked_out_col;
-	//COLOR = cracked_out_col;
+
+	// just playing around until the cracked looks nice with the dmg_scale controller
+	float v = (1. - dmg_scale + 0.3); // col changing with dmg
+	vec4 cracked_out_col = (v * src_col * (1. - cracked_src.x)) +
+							3. * step(0.1, dmg_scale) * vec4(cracked_col, cracked_src.x);
+
+	//
 	vec4 c = mix(src_col, cracked_out_col, dmg_scale) * shape_mask;
-	COLOR = mix(c, vec4(charging_col, charging_alpha), t);
-	//COLOR = cracked_out_col;
+	c *= smoothstep(0.5, 1., c.w);
+	//float a = (1. - t) * smoothstep(0.3, 1., c.w);
+
+	// this is just trying to play with the time curve on the mixing
+	float _t = smoothstep(0., 1., t);
+	COLOR = c + vec4(mix(vec3(0.), charging_col, t), mix(c.w, charging_alpha * charging_alpha, _t));
+	
 }
 
 //void light() {

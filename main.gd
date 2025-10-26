@@ -8,3 +8,7 @@ func _ready() -> void:
 	the_shootay_manager.wrapping_bounds = level.wrapping_bounds
 	the_player.shootay_manager = the_shootay_manager
 	
+	the_player.died.connect( game_over )
+	
+func game_over():
+	pass

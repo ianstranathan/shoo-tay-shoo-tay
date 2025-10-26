@@ -36,7 +36,9 @@ func aim_anim(aiming_dir_len: float):
 	var _scale = shooting_line_scale * aiming_dir_len # [0, 3]
 	# -- 
 	# lerp(55.0, 0.0, aiming_dir_len)
-	aiming_sprite.position.x = lerp(55.0, 0.0, aiming_dir_len) + _scale * aiming_sprite_size.x/2.0
+	aiming_sprite.position.x = lerp(55.0, 0.0, aiming_dir_len) + (_scale * aiming_sprite_size.x/2.0
+																 + 0.05 * _player_tex_size.x * player_sprite.scale.x) 
+	
 	aiming_sprite.material.set_shader_parameter("_scale", aiming_dir_len)
 
 
