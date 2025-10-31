@@ -1,27 +1,35 @@
-[gd_scene load_steps=3 format=3 uid="uid://dj0ps4y0nxcjp"]
+[gd_scene load_steps=4 format=3 uid="uid://dj0ps4y0nxcjp"]
 
 [ext_resource type="Script" uid="uid://dh3eb0dp4nb87" path="res://levels/level.gd" id="1_4lkc1"]
 [ext_resource type="PackedScene" uid="uid://cj04j618yr5oc" path="res://wall/wall.tscn" id="2_7sc02"]
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_4lkc1"]
+vertices = PackedVector2Array(865.133, 166.242, 1050.28, 633.039, -959.633, 638.977, -1555.6, -6.5625, -1647.41, -576.922, 799.711, -780.188)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2), PackedInt32Array(2, 3, 4, 5, 0)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(809, -791, 875, 164, 1065, 643, -964, 649, -1565, -2, -1659, -586)])
+
 [node name="Level" type="Node2D"]
 script = ExtResource("1_4lkc1")
 
-[node name="Wall" parent="." instance=ExtResource("2_7sc02")]
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_4lkc1")
+
+[node name="Wall" parent="NavigationRegion2D" instance=ExtResource("2_7sc02")]
 position = Vector2(400, -22)
 
-[node name="Wall2" parent="." instance=ExtResource("2_7sc02")]
+[node name="Wall2" parent="NavigationRegion2D" instance=ExtResource("2_7sc02")]
 position = Vector2(94, -271)
 rotation = 0.369476
 scale = Vector2(5.28, 0.399999)
 
-[node name="Wall3" parent="." instance=ExtResource("2_7sc02")]
+[node name="Wall3" parent="NavigationRegion2D" instance=ExtResource("2_7sc02")]
 position = Vector2(-514, -99)
 
-[node name="Wall4" parent="." instance=ExtResource("2_7sc02")]
+[node name="Wall4" parent="NavigationRegion2D" instance=ExtResource("2_7sc02")]
 position = Vector2(-294, 212)
-rotation = 0.566727
-scale = Vector2(-2.44, 0.44)
+rotation = -2.57487
+scale = Vector2(2.44, -0.44)
 
-[node name="Wall5" parent="." instance=ExtResource("2_7sc02")]
+[node name="Wall5" parent="NavigationRegion2D" instance=ExtResource("2_7sc02")]
 position = Vector2(186, 220)
 scale = Vector2(3.63075, 0.466282)

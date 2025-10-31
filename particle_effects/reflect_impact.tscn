@@ -10,6 +10,7 @@ particles_anim_v_frames = 7
 particles_anim_loop = true
 
 [sub_resource type="Gradient" id="Gradient_q4a5p"]
+offsets = PackedFloat32Array(0, 0.527273)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.221)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_dcbg8"]
@@ -37,8 +38,9 @@ material = SubResource("CanvasItemMaterial_q4a5p")
 emitting = false
 amount = 12
 texture = ExtResource("1_q4a5p")
+lifetime = 0.75
 one_shot = true
 speed_scale = 2.0
-explosiveness = 0.7
-randomness = 0.4
+explosiveness = 0.75
+randomness = 0.8
 process_material = SubResource("ParticleProcessMaterial_q4a5p")
