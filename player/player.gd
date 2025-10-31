@@ -14,7 +14,7 @@ var move_dir: Vector2 = Vector2.ZERO
 @export var shooting_line_scale: float = 3.0
 @onready var aiming_sprite_size :Vector2i = aiming_sprite.texture.get_size()
 @export var look_ahead_dist = 100.0
-@export_range(1,10) var rotation_speed: float = 5
+@export_range(1,20) var rotation_speed: float = 10
 # -- Shootay-Shootay
 @onready var shootay_timer: Timer = $ShootayTimer
 
