@@ -16,6 +16,7 @@ the_shootay_manager = NodePath("ShootayManager")
 [node name="Level" parent="." instance=ExtResource("2_7mycd")]
 
 [node name="Player" parent="." instance=ExtResource("1_ig7tw")]
+rotation_speed = 20.0
 
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("target")]
 position_smoothing_enabled = true
