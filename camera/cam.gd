@@ -4,7 +4,8 @@ extends Camera2D
 @export var target: Player
 
 @export_category("Camera Smoothing")
-@export_range(1,10) var smoothing : float = 2
+## Higher number => more smoothing; lower number => less.
+@export_range(1,10) var smoothing : float = 2 
 
 @onready var _target_pos: Vector2 = target.global_position
 

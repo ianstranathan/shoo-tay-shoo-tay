@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 class_name Player
 
-@export var base_col: Color = Color(0.4, 0.6, 0.8, 1.0)
+signal died
 
 @export_category("Movement")
 var move_dir: Vector2 = Vector2.ZERO
@@ -24,11 +24,32 @@ var move_dir: Vector2 = Vector2.ZERO
 var shootay_manager: Node2D
 var _aim_dir: Vector2 = Vector2.RIGHT
 var _last_aim_dir := _aim_dir
+var can_shoot: bool # -- to prevent spamming
 
 func _ready() -> void:
-	player_sprite.material.set_shader_parameter("src_col", base_col)
 	assert(aiming_sprite)
 	shootay_timer.timeout.connect( shootay_shootay )
+	
+	$ReloadTimer.timeout.connect( func(): can_shoot = true)
+	# -- just some event connections
+	# -- it looks better if the max overcharge holds on for a sec
+	# -- kinda like a psuedo overcharge-coyote-time
+	# -- this seems kinda convoluted, but I need some easy thing like a timer
+	# -- to feed to shader (I'm normalizing the timer duration [0, 1]
+	$ShootayTimer.start()
+	$ShootayTimer.timeout.connect(func(): 
+		$ShootayMaxPauseTimer.start())
+	$ShootayMaxPauseTimer.timeout.connect( func():
+		$ShootayTimer.start())
+	
+	# -- 
+	$HitboxComponent.was_hit.connect( func( attack ):
+		$HealthComponent.take_damge( attack.damage ))
+
+	# -- 
+	$HealthComponent.health_changed.connect( func(ratio: float): # ratio is normalized
+		player_sprite.material.set_shader_parameter("dmg_scale", 1. - ratio))
+	$HealthComponent.health_depeleted.connect( func(): emit_signal("died"))
 
 func aim_anim(aiming_dir_len: float):
 	# -- translate the position of the aiming sprite
@@ -42,6 +63,8 @@ func aim_anim(aiming_dir_len: float):
 	aiming_sprite.material.set_shader_parameter("_scale", aiming_dir_len)
 
 
+@onready var shootay_timer_fn: Callable = func(): return 
+
 func _process(delta: float) -> void:
 	var r_stick_input = Input.get_vector("aim left", "aim right", "aim up", "aim down")
 	move_dir = Input.get_vector("move left", "move right", "move up", "move down")
@@ -50,6 +73,9 @@ func _process(delta: float) -> void:
 		_aim_dir = r_stick_input
 	aim_anim(r_stick_input.length())
 
+	# regen timer 
+	if !$ShootayTimer.is_stopped():
+		player_sprite.material.set_shader_parameter("t", Utils.normalized_timer($ShootayTimer))
 
 func _physics_process(delta: float) -> void:
 	shootay_shootay_visual()
@@ -75,11 +101,15 @@ func look_ahead_position() -> Vector2:
 
 
 func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
-	assert(shootay_manager)
-	var dir: Vector2 = _last_aim_dir.normalized()
-	shootay_manager.make_shootay(global_position +  dir * _player_tex_size.x / 2.0,
-								 dir,
-								 shootay_value)
+	if can_shoot:
+		can_shoot = false
+		assert(shootay_manager)
+		$ShootayTimer.stop()
+		$ShootayMaxPauseTimer.emit_signal("timeout")
+		var dir: Vector2 = _last_aim_dir.normalized()
+		shootay_manager.make_shootay(global_position +  dir * _player_tex_size.x / 2.0,
+									 dir,
+									 shootay_value)
 	# -- shoot
 	#shootay.shoot(, shootay_value)
 

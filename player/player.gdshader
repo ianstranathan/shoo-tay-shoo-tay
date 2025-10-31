@@ -4,10 +4,12 @@ uniform float dmg_scale: hint_range(0.0, 1.0, 0.25);
 uniform float t: hint_range(0.0, 1.0, 0.05);
 
 void vertex() {
-	float s = mix(1., 3., dmg_scale) * (sin( mix(4., 12., dmg_scale * dmg_scale) * TIME));
-	float m = mix(1., 5., dmg_scale) * (sin( mix(0., 12., t * t) * TIME));
-	VERTEX += vec2(sign(VERTEX.x), sign(VERTEX.y)) * (s + m) ;
+	float anim_t = 10. * t;
+	//float s = mix(1., 4., dmg_scale) * (sin( mix(4., 12., dmg_scale * dmg_scale) * anim_t));
+	float m = mix(1., 7., t) * (sin( mix(4., 12., t * t) * anim_t));
+	VERTEX += vec2(sign(VERTEX.x), sign(VERTEX.y)) * m;// (s + m) ;
 }
+
 float sdTriangleIsosceles( in vec2 p, in vec2 q )
 {
     p.x = abs(p.x);
@@ -20,7 +22,7 @@ float sdTriangleIsosceles( in vec2 p, in vec2 q )
 }
 
 const float tri_height = 0.5;
-uniform vec4 src_col: source_color = vec4(0.4, 0.6, 0.8, 1.);
+uniform vec4 src_col: source_color = vec4(1.0, 0.6, 0., 1.);
 uniform sampler2D cracked_tex: repeat_enable;
 
 
@@ -58,29 +60,21 @@ void fragment() {
 	// 0.5 * (sin(x) + 1)
 	// float cracked_glow_variation = 0.5 * (0.5 * (sin(mix(4., 12., dmg_scale * dmg_scale) * TIME) + 1.0))
 	//float cracked_glow_dist = 1. / ((1. - cracked_src.x) + (0.5 * (abs(sin( mix(4., 12., dmg_scale * dmg_scale) * TIME)))));
-	float cracked_glow_dist = 1. / ((1. - cracked_src.x) + (0.8 * (0.5 * (sin(mix(4., 12., dmg_scale * dmg_scale) * TIME) + 1.0))));
+	float cracked_glow_dist = 1. / ((1. - cracked_src.x) + (0.8 * (0.5 * (sin(mix(4., 12., dmg_scale * dmg_scale) * 10. * t) + 1.0))));
 	cracked_glow_dist *= 0.1;
 	cracked_glow_dist = pow(cracked_glow_dist, 0.8);
 	vec3 cracked_col = cracked_glow_dist * charging_col_src;
 	cracked_col = 1.0 - exp( -cracked_col );
 
-	// just playing around until the cracked looks nice with the dmg_scale controller
-	float v = (1. - dmg_scale + 0.3); // col changing with dmg
-	vec4 cracked_out_col = (v * src_col * (1. - cracked_src.x)) +
-							3. * step(0.1, dmg_scale) * vec4(cracked_col, cracked_src.x);
-
 	//
-	vec4 c = mix(src_col, cracked_out_col, dmg_scale) * shape_mask;
-	c *= smoothstep(0.5, 1., c.w);
-	//float a = (1. - t) * smoothstep(0.3, 1., c.w);
+	float shifted_dmg_scale = dmg_scale + 0.3;
+	float cracked_alpha = ((1. - shifted_dmg_scale) + 0.5) * (1. - 0.2 * cracked_src.x) + 3. * cracked_src.x;
+	//
+	float _a = mix(0., 0.1 * cracked_alpha * cracked_alpha, shifted_dmg_scale);
+	vec4 c = vec4(src_col.xyz + _a, cracked_alpha) * shape_mask;//mix(src_col, vec4(src_col.xyz, cracked_alpha), 1.) * shape_mask;
+	c *= smoothstep(0.2, 1.8, c.w);
 
 	// this is just trying to play with the time curve on the mixing
 	float _t = smoothstep(0., 1., t);
 	COLOR = c + vec4(mix(vec3(0.), charging_col, t), mix(c.w, charging_alpha * charging_alpha, _t));
-	
 }
-
-//void light() {
-//	// Called for every pixel for every light affecting the CanvasItem.
-//	// Uncomment to replace the default light processing function with this one.
-//}

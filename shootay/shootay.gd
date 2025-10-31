@@ -10,6 +10,8 @@ var dist: float = 0.0
 @export var SHOOTING_SPEED: float = 600.0
 @onready var ray = $RayCast2D
 
+signal shootay_collided( pos: Vector2, normal: Vector2)
+
 # -- NOTE
 var explosion_id: int
 
@@ -18,13 +20,10 @@ var wrapping_bounds: Vector2
 
 func _ready() -> void:
 	var _b = ShootayGlobals.wrapping_buffer
-	assert( wrapping_bounds )
 	wrapping_bounds += Vector2(_b, _b)
-	
-	$Area2D.area_entered.connect( func(area: Area2D):
-		var p = area.get_parent()
-		if p is Shootay:
-			explode( p ))
+	# -- there is a unique id given by manager to resolve who explodes
+	# -- to prevent multiple explosions
+	$Area2D.shootay_collision.connect( func(p): explode( p ))
 
 
 func _physics_process(delta: float) -> void:
@@ -35,9 +34,16 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 
 	if ray.is_colliding():
+		# -- particle released should be dependent on the collider, but just one
+		# -- for now
+		var n = ray.get_collision_normal()
+		emit_signal("shootay_collided", ray.get_collision_point(), n)
+		#if ray.get_collider() is Player:
+			#queue_free()
 		stretch_squash( false )
-		vel = vel.bounce(ray.get_collision_normal())
+		vel = vel.bounce( n )
 		rotation_from_velocity_vector( vel )
+		
 	
 	# -- Wrapping logic
 	#if global_position.x > wrapping_bounds.x:
@@ -49,10 +55,6 @@ func _physics_process(delta: float) -> void:
 	#elif global_position.y < wrapping_bounds.y:
 		#global_position.y = wrapping_bounds.y
 
-
-#func on_area_entered( area: Area2D ):
-	#if area.get_parent() is Shootay and area.get_parent().shootay_value != shootay_value:
-		#explode()
 
 
 func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
@@ -106,6 +108,18 @@ func set_shootay_collision_layer():
 	#if (shootay_value == ShootayGlobals.ShootayValues.REFLECT and
 		#_layer == ShootayGlobals.reflection_layer):
 
+#func shootay_init(pos: Vector2,
+				  #wb: Vector2,
+				  #dir: Vector2,
+				  #sv: ShootayGlobals.ShootayValues) -> void:
+	## -- the shootays collision shape had to be at least far enough away from player
+	## -- to not intersect the player initially
+	#var coll_shape_offset = 1.2 * $Area2D/CollisionShape2D.shape.height / 2.0
+	#global_position = pos + dir * coll_shape_offset
+	#wrapping_bounds = wb
+	#shootay_value = sv
+	#$ShootayColorComponent.set_shootay_visual( shootay_value )
+	##shoot( dir, shootay_value)
 
 func explode(shootay_collided_with: Shootay):
 	if (shootay_collided_with.shootay_value != shootay_value):
