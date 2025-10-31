@@ -14,7 +14,7 @@ var move_dir: Vector2 = Vector2.ZERO
 @export var shooting_line_scale: float = 3.0
 @onready var aiming_sprite_size :Vector2i = aiming_sprite.texture.get_size()
 @export var look_ahead_dist = 100.0
-
+@export_range(1,10) var rotation_speed: float = 5
 # -- Shootay-Shootay
 @onready var shootay_timer: Timer = $ShootayTimer
 
@@ -63,7 +63,7 @@ func _physics_process(delta: float) -> void:
 	var dir = _last_aim_dir.normalized();
 	var angle = Vector2.RIGHT.angle_to( dir )
 	#angle = PI / 2.0 + angle
-	global_rotation = angle
+	global_rotation = lerp_angle(global_rotation,angle,rotation_speed * delta)
 
 	# ------------------------ Move
 	velocity = move_dir.normalized() * SPEED
