@@ -39,42 +39,42 @@ Transmit=""
 ]
 }
 "move left"={
-"deadzone": 0.2,
+"deadzone": 0.25,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":0,"axis_value":-1.0,"script":null)
 ]
 }
 "move right"={
-"deadzone": 0.2,
+"deadzone": 0.25,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":0,"axis_value":1.0,"script":null)
 ]
 }
 "move up"={
-"deadzone": 0.2,
+"deadzone": 0.25,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":1,"axis_value":-1.0,"script":null)
 ]
 }
 "move down"={
-"deadzone": 0.2,
+"deadzone": 0.25,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":1,"axis_value":1.0,"script":null)
 ]
 }
 "aim left"={
-"deadzone": 0.2,
+"deadzone": 0.25,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":2,"axis_value":-1.0,"script":null)
 ]
 }
 "aim right"={
-"deadzone": 0.2,
+"deadzone": 0.25,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":2,"axis_value":1.0,"script":null)
 ]
 }
 "aim up"={
-"deadzone": 0.2,
+"deadzone": 0.25,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":3,"axis_value":-1.0,"script":null)
 ]
 }
 "aim down"={
-"deadzone": 0.2,
+"deadzone": 0.25,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":3,"axis_value":1.0,"script":null)
 ]
 }
