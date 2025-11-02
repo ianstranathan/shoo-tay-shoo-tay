@@ -4,9 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://cj04j618yr5oc" path="res://wall/wall.tscn" id="2_7sc02"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_4lkc1"]
-vertices = PackedVector2Array(865.133, 166.242, 1050.28, 633.039, -959.633, 638.977, -1555.6, -6.5625, -1647.41, -576.922, 799.711, -780.188)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2), PackedInt32Array(2, 3, 4, 5, 0)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(809, -791, 875, 164, 1065, 643, -964, 649, -1565, -2, -1659, -586)])
+vertices = PackedVector2Array(-133.32, 269.008, -56.3672, 259.844, 428.367, 259.844, -174.313, 333.391, 474, 52, 865.133, 166.242, 1050.28, 633.039, 428.367, 180.156, -454.68, 154.992, -531.727, 365.281, 431.289, -178.547, 799.641, -781.227, 474, -96, -1431.08, -739.469, -588, -25, 326, 52, -56.3672, 180.156, -440, -25, -440, -173, -243.289, -363.453, 326, -96, -413.703, 90.6094, -726.922, 538.469, -667.727, 490.281, -217.602, -429.852, -1849.79, -848.633, -588, -173, 405.602, -112.148, -590.922, 413.469, -1567.08, -614.469, -1490.27, -691.281, -1626.27, -566.281, -1556.24, -7.25781, -959.633, 638.977)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 6, 2, 7), PackedInt32Array(8, 3, 9), PackedInt32Array(10, 11, 5, 12), PackedInt32Array(8, 9, 13, 14), PackedInt32Array(15, 4, 7, 16), PackedInt32Array(17, 18, 19, 20, 15, 16), PackedInt32Array(17, 16, 1, 0, 21, 14), PackedInt32Array(2, 6, 22, 23, 3), PackedInt32Array(11, 10, 24), PackedInt32Array(25, 11, 24, 13), PackedInt32Array(14, 21, 8), PackedInt32Array(26, 14, 13), PackedInt32Array(5, 4, 12), PackedInt32Array(27, 10, 12), PackedInt32Array(27, 12, 20), PackedInt32Array(19, 27, 20), PackedInt32Array(9, 3, 23, 28), PackedInt32Array(28, 23, 29, 30), PackedInt32Array(19, 18, 26, 13, 24), PackedInt32Array(25, 13, 30), PackedInt32Array(25, 30, 29, 31), PackedInt32Array(32, 25, 31), PackedInt32Array(32, 31, 22, 33), PackedInt32Array(6, 33, 22)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(809, -791, 875, 164, 1065, 643, -964, 649, -1565, -2, -1864, -859)])
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_4lkc1")
@@ -33,3 +33,13 @@ scale = Vector2(2.44, -0.44)
 [node name="Wall5" parent="NavigationRegion2D" instance=ExtResource("2_7sc02")]
 position = Vector2(186, 220)
 scale = Vector2(3.63075, 0.466282)
+
+[node name="Wall6" parent="NavigationRegion2D" instance=ExtResource("2_7sc02")]
+position = Vector2(-1147, -38)
+rotation = -0.683258
+scale = Vector2(0.439999, 10.9729)
+
+[node name="Wall7" parent="NavigationRegion2D" instance=ExtResource("2_7sc02")]
+position = Vector2(-1011, -163)
+rotation = -0.683258
+scale = Vector2(0.439999, 10.9729)

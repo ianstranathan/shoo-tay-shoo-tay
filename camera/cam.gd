@@ -4,8 +4,7 @@ extends Camera2D
 @export var target: Player
 
 @export_category("Camera Smoothing")
-## Higher number => more smoothing; lower number => less.
-@export_range(1,10) var smoothing : float = 2 
+@export_range(1,20) var smoothing : float = 20 
 
 @onready var _target_pos: Vector2 = target.global_position
 
@@ -17,7 +16,7 @@ func _ready() -> void:
 	
 	$ShootShakeTimer.timeout.connect(func(): shootay_easing_fn =null)
 	
-	smoothing = float(11 - smoothing)
+	smoothing = float(21 - smoothing)
 	
 func _physics_process(delta: float) -> void:
 	

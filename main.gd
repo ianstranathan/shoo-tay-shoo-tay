@@ -12,7 +12,8 @@ func _ready() -> void:
 	
 	the_player.died.connect( game_over )
 	
-	
+	$EnemyManager.player_ref = the_player
+
 func game_over():
 	# -- slow the tick rate way down for a minute, zoom in on how terrible
 	# -- you are as a player
