@@ -26,3 +26,13 @@ func normalized_timer(timer: Timer, reversed=false):
 		return (1. - t)
 	else:
 		return t
+
+
+func make_a_packed_vec2_circle(num_pts: int, r: float) -> PackedVector2Array:
+	var v: PackedVector2Array = []
+	var theta = 0
+	var delta_theta = TAU / float(num_pts)
+	for i in range(num_pts):
+		v.append( r * Vector2(cos(theta), sin(theta)))
+		theta += delta_theta
+	return v

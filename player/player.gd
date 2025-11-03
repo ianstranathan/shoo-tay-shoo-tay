@@ -6,7 +6,7 @@ signal died
 
 @export_category("Movement")
 var move_dir: Vector2 = Vector2.ZERO
-@export var SPEED: float = 200.0
+@export var SPEED: float = 300.0
 
 @export_category("Aiming")
 @export var aiming_sprite: Sprite2D
@@ -31,6 +31,7 @@ func _ready() -> void:
 	shootay_timer.timeout.connect( shootay_shootay )
 	
 	$ReloadTimer.timeout.connect( func(): can_shoot = true)
+	# --------------------------------------------------
 	# -- just some event connections
 	# -- it looks better if the max overcharge holds on for a sec
 	# -- kinda like a psuedo overcharge-coyote-time
@@ -42,14 +43,15 @@ func _ready() -> void:
 	$ShootayMaxPauseTimer.timeout.connect( func():
 		$ShootayTimer.start())
 	
-	# -- 
+	# -------------------------------------------------- 
 	$HitboxComponent.was_hit.connect( func( attack ):
 		$HealthComponent.take_damge( attack.damage ))
 
-	# -- 
+	# --------------------------------------------------
 	$HealthComponent.health_changed.connect( func(ratio: float): # ratio is normalized
 		player_sprite.material.set_shader_parameter("dmg_scale", 1. - ratio))
 	$HealthComponent.health_depeleted.connect( func(): emit_signal("died"))
+
 
 func aim_anim(aiming_dir_len: float):
 	# -- translate the position of the aiming sprite

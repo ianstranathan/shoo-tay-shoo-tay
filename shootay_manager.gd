@@ -18,7 +18,7 @@ func make_shootay(pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.Shoot
 	shootay.explosion_id = shootay_count
 	
 	# -- magic number is just to nudge it past where it needs to go
-	var coll_shape_offset = 0.8 * shootay.get_node("Area2D/CollisionShape2D").shape.height / 2.0
+	var coll_shape_offset = 0.7 * shootay.get_node("Area2D/CollisionShape2D").shape.height / 2.0
 	shootay.global_position = pos + dir.normalized() * coll_shape_offset
 	
 	# -- relay signal up

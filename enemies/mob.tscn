@@ -1,0 +1,53 @@
+[gd_scene load_steps=8 format=3 uid="uid://brbsqoshfpptq"]
+
+[ext_resource type="Script" uid="uid://bx2y6e3jcdklu" path="res://enemies/mob.gd" id="1_b8st1"]
+[ext_resource type="Shader" uid="uid://jhthuqdlbvkn" path="res://enemies/base_flashing.gdshader" id="2_m3fjm"]
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="3_qftf6"]
+[ext_resource type="Script" uid="uid://bsylm61xpi4k7" path="res://components/hitbox_component.gd" id="4_gceo1"]
+[ext_resource type="Script" uid="uid://dtveseykhco0l" path="res://components/health_component.gd" id="5_tcap5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gceo1"]
+resource_local_to_scene = true
+shader = ExtResource("2_m3fjm")
+shader_parameter/l = 0.3125
+shader_parameter/t = 4.8
+shader_parameter/exp_decay_modifier = 2.0
+shader_parameter/health = 1.0
+shader_parameter/src_color = Color(1, 0, 1, 0)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b8st1"]
+radius = 20.0
+
+[node name="Mob" type="CharacterBody2D"]
+collision_layer = 16
+collision_mask = 3
+script = ExtResource("1_b8st1")
+flash_decay_modifier = 3.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_gceo1")
+texture = ExtResource("3_qftf6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_b8st1")
+
+[node name="HitboxComponent" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 14
+script = ExtResource("4_gceo1")
+metadata/_custom_type_script = "uid://bsylm61xpi4k7"
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="HitboxComponent"]
+shape = SubResource("CircleShape2D_b8st1")
+
+[node name="ColorModulationTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("5_tcap5")
+MAX_HEALTH = 50.0
+metadata/_custom_type_script = "uid://dtveseykhco0l"
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+neighbor_distance = 20.0
