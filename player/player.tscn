@@ -5,8 +5,8 @@
 [ext_resource type="Script" uid="uid://qlxe067lrvwq" path="res://player/player.gd" id="1_yw30f"]
 [ext_resource type="Texture2D" uid="uid://dkr8u5nmt6ncg" path="res://assets/T_Random_23.png" id="3_qjkh3"]
 [ext_resource type="Shader" uid="uid://c4a4eplt6ovbr" path="res://player/aim_visual/aim_visual.gdshader" id="4_yw30f"]
-[ext_resource type="Script" uid="uid://bsylm61xpi4k7" path="res://components/hitbox_component.gd" id="7_boad6"]
-[ext_resource type="Script" uid="uid://dtveseykhco0l" path="res://components/health_component.gd" id="8_rgyib"]
+[ext_resource type="Script" path="res://components/hitbox_component.gd" id="7_boad6"]
+[ext_resource type="Script" path="res://components/health_component.gd" id="8_rgyib"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
