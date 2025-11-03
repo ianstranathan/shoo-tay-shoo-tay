@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=11 format=3 uid="uid://cnjs673hgk6wm"]
 
 [ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bgodmmno8hffy" path="res://main.gd" id="1_lquwl"]
 [ext_resource type="PackedScene" uid="uid://dj0ps4y0nxcjp" path="res://levels/level0.tscn" id="2_7mycd"]
 [ext_resource type="Script" uid="uid://dbx6y30r5vrjs" path="res://camera/cam.gd" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://b717816mvrhfr" path="res://camera/follow_rig.gd" id="4_4c57u"]
+[ext_resource type="Script" uid="uid://dgk6ocqcbjwkr" path="res://camera/shake_pivot.gd" id="5_efxa6"]
 [ext_resource type="Script" uid="uid://cj5le4ngvuhl6" path="res://shootay_manager.gd" id="6_7mycd"]
 [ext_resource type="PackedScene" uid="uid://brbsqoshfpptq" path="res://enemies/mob.tscn" id="7_5vw27"]
 [ext_resource type="Script" uid="uid://c24o054px4d8u" path="res://vfx_container.gd" id="7_272bh"]
@@ -20,14 +22,19 @@ the_shootay_manager = NodePath("ShootayManager")
 [node name="Player" parent="." instance=ExtResource("1_ig7tw")]
 rotation_speed = 20.0
 
-[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("target")]
-position_smoothing_enabled = true
-script = ExtResource("4_1bvp3")
+[node name="FollowRig" type="Node2D" parent="." node_paths=PackedStringArray("target")]
+script = ExtResource("4_4c57u")
 target = NodePath("../Player")
 
-[node name="ShootShakeTimer" type="Timer" parent="Camera2D"]
+[node name="ShakePivot" type="Node2D" parent="FollowRig"]
+script = ExtResource("5_efxa6")
+
+[node name="ShootShakeTimer" type="Timer" parent="FollowRig/ShakePivot"]
 wait_time = 0.2
 one_shot = true
+
+[node name="Camera2D" type="Camera2D" parent="FollowRig/ShakePivot"]
+script = ExtResource("4_1bvp3")
 
 [node name="ShootayManager" type="Node2D" parent="."]
 script = ExtResource("6_7mycd")
