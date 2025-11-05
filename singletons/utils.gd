@@ -36,3 +36,9 @@ func make_a_packed_vec2_circle(num_pts: int, r: float) -> PackedVector2Array:
 		v.append( r * Vector2(cos(theta), sin(theta)))
 		theta += delta_theta
 	return v
+
+
+func hit_stop(time_scale: float, duration: float):
+	Engine.time_scale = time_scale
+	await(get_tree().create_timer(duration * time_scale).timeout)
+	Engine.time_scale = 1.0

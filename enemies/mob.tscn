@@ -50,4 +50,6 @@ MAX_HEALTH = 50.0
 metadata/_custom_type_script = "uid://dtveseykhco0l"
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+avoidance_enabled = true
+radius = 25.0
 neighbor_distance = 20.0

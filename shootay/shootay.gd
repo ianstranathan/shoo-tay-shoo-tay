@@ -24,7 +24,7 @@ func _ready() -> void:
 	# -- there is a unique id given by manager to resolve who explodes
 	# -- to prevent multiple explosions
 	$Area2D.shootay_collision.connect( func(p): explode( p ))
-
+	
 
 func _physics_process(delta: float) -> void:
 	var delta_pos = vel * delta
@@ -58,11 +58,20 @@ func _physics_process(delta: float) -> void:
 
 
 func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
+	#$AttackComponent.dir = dir
+	$AttackComponent.parent = self # -- this is so I can get the direction its going
+								   # -- not ideal
+	$AttackComponent.dynamic_data["shootay_value"] = _shootay_val
 	shootay_value = _shootay_val
 	$ShootayColorComponent.set_shootay_visual( shootay_value )
 	set_shootay_collision_layer()
-	assert( is_equal_approx(dir.length(), 1.0)) # -- .normalized() should be in player to save a call
-	vel = dir * SHOOTING_SPEED                  # -- but just in case
+	
+	# -- check to make sure we're not normalizing  multiple times
+	# -- everything really needs to be normalized, so origin point should be
+	# -- responsible
+	# -- assert is here just in case, doesn't exist in non-debug build
+	assert( is_equal_approx(dir.length(), 1.0)) 
+	vel = dir * SHOOTING_SPEED                  
 	rotation_from_velocity_vector( dir )
 	stretch_squash( true )
 	GlobalSignals.emit_signal("shake_camera", {"type": "Shootay", "amount": 20, "dir": dir})
