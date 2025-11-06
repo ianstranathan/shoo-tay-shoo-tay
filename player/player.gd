@@ -45,7 +45,8 @@ func _ready() -> void:
 	
 	# -------------------------------------------------- 
 	$HitboxComponent.was_hit.connect( func( attack ):
-		$HealthComponent.take_damge( attack.damage ))
+		$HealthComponent.take_damage( attack.damage ))
+	
 
 	# --------------------------------------------------
 	$HealthComponent.health_changed.connect( func(ratio: float): # ratio is normalized

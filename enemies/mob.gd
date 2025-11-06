@@ -8,6 +8,7 @@ All relevant data is exposed in editor:
 	src color is delf evident
 	flash decay modifier changes how rapidly the flash juice fades (i.e. c in exp(-c * time))
 """
+@export_category("Appearance")
 ## changes shader sdf + collision shapes
 @export var radius: float = 20.0:
 	set = set_radius
@@ -17,14 +18,26 @@ All relevant data is exposed in editor:
 @export_range(1.0, 7.0, 0.1) var flash_decay_modifier: float = 5.0
 
 @export_category("Movement")
-@export var speed: float = 300.0
+@export var speed: float = 175
+
+@export_category("Behavior")
+@export var behavior_tree: Resource = MeleeCharge
+@export var stop_distance: float = 100 #how far to stop from target, temporary pause before moving in for attack
+@export var repath_interval: float = 0.2 #how often it finds a new path to target
+@export var melee_distance: float = 55
 
 var target: CharacterBody2D
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 
+#Blackboard and behavior runner
+const BB = preload("res://AI/BT/Runtime/Blackboard.gd")
+const BBKeys = preload("res://AI/BT/Common/BBKeys.gd")
+const BTRunner = preload("res://AI/BT/Runtime/BTRunner.gd")
+var blackboard: BB
+var bt: BTRunner
+
 func _ready() -> void:
 	set_radius( radius )
-	
 	set_col(src_color)
 	
 	# ----------------------------- Signals
@@ -37,10 +50,22 @@ func _ready() -> void:
 	# navigation_agent.path_postprocessing = 1
 	# -- this will change to an awareness radius or whatever
 	navigation_agent.path_desired_distance = 2.0
-	navigation_agent.target_desired_distance = 2.0
 	navigation_agent.debug_enabled = true
-
-
+	
+	#AI Stuff
+	blackboard = BB.new()
+	blackboard.reset(BBKeys.DEFAULTS)
+	blackboard.set_value(BBKeys.TARGET,target)
+	blackboard.set_value(BBKeys.STOP_DISTANCE, stop_distance)
+	blackboard.set_value(BBKeys.DESIRED_MELEE, melee_distance)
+	
+	#make sure we assigned the behavior tree
+	if behavior_tree:
+		bt = behavior_tree.build(self, blackboard)
+		print("Behavior tree built:", bt)
+	else:
+		push_warning("No behavior tree assigned in inspector")
+		
 func _process(delta: float) -> void:
 	modulate_color()
 
@@ -52,15 +77,21 @@ func _physics_process(delta: float) -> void:
 		# CHANGE ME
 		# -- I should probably not be setting this every frame
 		# -- but for now let's just get it going
-		set_movement_target( target.global_position )
+		#adding more stuff that needs to be changed - testing -Alex
+		blackboard.set_value(BBKeys.TARGET_POS,target.global_position)
+		blackboard.set_value(BBKeys.DISTANCE,global_position.distance_to(target.global_position))
+		
+		#set_movement_target( target.global_position )
+		bt.tick(delta)
+		
 		if navigation_agent.is_navigation_finished():
-			return
-		var current_agent_position: Vector2 = global_position
-		var next_path_position: Vector2 = navigation_agent.get_next_path_position()
-		
-		#var rel_pos = next_path_position - current_agent_position
-		
-		velocity = current_agent_position.direction_to(next_path_position) * speed
+			velocity = Vector2.ZERO #this might be ugly - making sure it stops at the right time
+		else:
+			#var current_agent_position: Vector2 = global_position
+			var next_path_position: Vector2 = navigation_agent.get_next_path_position()
+			var dir := (next_path_position - global_position).normalized()
+			velocity = dir * speed
+
 		move_and_slide()
 
 
@@ -76,7 +107,7 @@ func set_col(col: Color) -> void:
 
 func take_hit( attack :AttackComponent):
 	$ColorModulationTimer.start()
-	$HealthComponent.take_damge( attack.damage )
+	$HealthComponent.take_damage( attack.damage )
 
 
 func modulate_color():

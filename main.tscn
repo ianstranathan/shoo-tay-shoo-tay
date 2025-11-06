@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=13 format=3 uid="uid://cnjs673hgk6wm"]
 
 [ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bgodmmno8hffy" path="res://main.gd" id="1_lquwl"]
@@ -10,6 +10,11 @@
 [ext_resource type="PackedScene" uid="uid://brbsqoshfpptq" path="res://enemies/mob.tscn" id="7_5vw27"]
 [ext_resource type="Script" uid="uid://c24o054px4d8u" path="res://vfx_container.gd" id="7_272bh"]
 [ext_resource type="PackedScene" uid="uid://cj4e05skrr1ug" path="res://enemies/enemy_manager/enemy_manager.tscn" id="7_kek77"]
+[ext_resource type="Script" uid="uid://4eonmdk5x103" path="res://AI/BT/Trees/MeleeCharge.gd" id="11_efxa6"]
+
+[sub_resource type="Resource" id="Resource_efxa6"]
+script = ExtResource("11_efxa6")
+metadata/_custom_type_script = "uid://4eonmdk5x103"
 
 [node name="Main" type="Node" node_paths=PackedStringArray("the_player", "level", "the_shootay_manager")]
 script = ExtResource("1_lquwl")
@@ -42,25 +47,9 @@ script = ExtResource("6_7mycd")
 [node name="vfx_container" type="Node2D" parent="."]
 script = ExtResource("7_272bh")
 
-[node name="EnemyManager" parent="." instance=ExtResource("7_kek77")]
+[node name="EnemyManager" parent="." node_paths=PackedStringArray("player_ref") instance=ExtResource("7_kek77")]
+player_ref = NodePath("../Player")
 
 [node name="Mob" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-1204, -265)
-
-[node name="Mob7" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-483, -512)
-
-[node name="Mob6" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-1453, -588)
-
-[node name="Mob5" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-947, 473)
-
-[node name="Mob4" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(402, -521)
-
-[node name="Mob2" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(561, 511)
-
-[node name="Mob3" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-1007, -728)
+position = Vector2(-325, -152)
+behavior_tree = SubResource("Resource_efxa6")
