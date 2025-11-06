@@ -2,7 +2,9 @@ extends CharacterBody2D
 
 class_name Player
 
+# -- signals
 signal died
+signal shot_a_shootay( pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.ShootayValues)
 """
 Current Movement variables are stateful
 (can be changed by environmentals, shots etc)
@@ -32,7 +34,7 @@ var move_dir: Vector2 = Vector2.ZERO
 # -- this is used to offset aiming reticle
 @onready var _player_tex_size: Vector2 = player_sprite.texture.get_size()
 
-var shootay_manager: Node2D
+
 var _aim_dir: Vector2 = Vector2.RIGHT
 var _last_aim_dir := _aim_dir
 var can_shoot: bool # -- to prevent spamming
@@ -41,7 +43,8 @@ func _ready() -> void:
 	assert(aiming_sprite)
 	$ReloadTimer.timeout.connect( func(): can_shoot = true)
 	
-	$BoostTimer.timeout.connect( func(): boost_end_callback.call())
+	$BoostTimer.timeout.connect( func():
+		boost_end_callback.call())
 	# -------------------------------------------------- 
 	$HitboxComponent.was_hit.connect( func( attack ):
 		if attack.dynamic_data.has("shootay_value"):
@@ -55,8 +58,6 @@ func _ready() -> void:
 		player_sprite.material.set_shader_parameter("dmg_scale", 1. - ratio))
 	$HealthComponent.health_depeleted.connect( func(): emit_signal("died"))
 
-	# --------------------------------------------------
-	$BoostTimer.timeout.connect( func(): pass)
 
 func aim_anim(aiming_dir_len: float):
 	# -- translate the position of the aiming sprite
@@ -114,6 +115,7 @@ var boost_dir:= Vector2.ZERO
 var pre_boost_speed: float
 var pre_boost_accl: float
 func boost(_dir: Vector2):
+	# if the closure speed, accl isn't the boost ones
 	pre_boost_speed = current_speed
 	pre_boost_accl = current_accl
 	Utils.hit_stop(0.05, 0.3)
@@ -124,9 +126,19 @@ func boost(_dir: Vector2):
 	current_speed = BOOSTING_SPEED
 	current_accl = BOOSTING_ACCL
 
+# -- TODO
+# -- put this edge case into the boost function and make tidier
 func boost_end_callback():
-	current_speed = pre_boost_speed
-	current_accl = pre_boost_accl
+	# -- there's an edge case where you can get hit before this is reinitialized
+	# -- so the last movement vars (pre_boost vars) were actually the boosted ones
+	if (pre_boost_accl == BOOSTING_ACCL or
+		pre_boost_speed == BOOSTING_SPEED):
+		current_speed = SPEED
+		current_accl = ACCL
+	else:
+		current_speed = pre_boost_speed
+		current_accl = pre_boost_accl
+
 
 func look_ahead_position() -> Vector2:
 	return look_ahead_dist * _last_aim_dir.normalized()
@@ -135,8 +147,12 @@ func look_ahead_position() -> Vector2:
 func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 	if can_shoot:
 		can_shoot = false
-		assert(shootay_manager)
 		var dir: Vector2 = _last_aim_dir.normalized()
-		shootay_manager.make_shootay(global_position +  dir * _player_tex_size.x / 2.0,
-									 dir,
-									 shootay_value)
+		emit_signal("shot_a_shootay",
+					global_position + dir * _player_tex_size.x / 2.0,
+					dir,
+					shootay_value)
+
+func teleport(pos: Vector2):
+	Utils.hit_stop(0.05, 0.3)
+	global_position = pos

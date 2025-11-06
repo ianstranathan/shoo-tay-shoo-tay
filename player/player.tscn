@@ -29,7 +29,7 @@ player_sprite = NodePath("PlayerSprite")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_yw30f")
-scale = Vector2(2.5, 2.5)
+scale = Vector2(2, 2)
 texture = ExtResource("1_rkbax")
 
 [node name="AimingSprite" type="Sprite2D" parent="."]
@@ -61,3 +61,5 @@ autostart = true
 [node name="BoostTimer" type="Timer" parent="."]
 wait_time = 0.4
 one_shot = true
+
+[node name="BoostTrailLine" type="Line2D" parent="."]

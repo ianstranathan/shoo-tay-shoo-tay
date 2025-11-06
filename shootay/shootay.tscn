@@ -45,7 +45,7 @@ scale = Vector2(3, 2)
 texture = ExtResource("1_dwr3s")
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(40, 0)
+target_position = Vector2(27, -1)
 collision_mask = 2
 collide_with_areas = true
 metadata/_edit_group_ = true
