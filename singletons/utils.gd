@@ -6,8 +6,8 @@ func uniform_float_fn(v: float, _surface, p: String):
 	_surface.material.set_shader_parameter(p, v);
 
 
-func shader_float_tween(tween: Tween,
-						_surface,
+func shader_float_tween(tween: Tween, 
+						_surface, 
 						uniform_str: String,
 						init_val: float,
 						final_val: float,

@@ -21,7 +21,7 @@ func make_shootay(pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.Shoot
 	# -- it has to at least clear the shooting origin / player
 	# -- it has to know about what the manager knows (its explosion id, wrapping bounds)
 	shootay_count += 1
-	shootay.explosion_id = shootay_count
+	shootay._id = shootay_count
 	shootay.cam_ref = cam_ref
 	shootay.player_ref = player_ref
 	shootay.wrapping_buffer = transmit_wrapping_buffer

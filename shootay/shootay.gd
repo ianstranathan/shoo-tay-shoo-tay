@@ -15,7 +15,7 @@ signal transmission_collided( midpoint: Vector2)
 
 
 # -- NOTE shootay manager
-var explosion_id: int
+var _id: int
 var cam_ref: Camera2D # -- assigned when shot if shootay value is transmit
 var player_ref: Player
 
@@ -40,12 +40,12 @@ func _physics_process(delta: float) -> void:
 	global_position += delta_pos
 	if dist > MAX_DISTANCE:
 		queue_free()
+	else:
+		if is_reflecting_shootay():
+			reflect()
+		else:
+			wrap_viewport()
 
-	if ray.is_colliding() and is_reflecting_shootay():
-		reflect()
-
-	if is_transmitting_shootay():
-		wrap_viewport()
 
 func wrap_viewport():
 	var x = player_ref.global_position.x
@@ -60,14 +60,16 @@ func wrap_viewport():
 	elif global_position.y < y - wrapping_bounds.y:
 		global_position.y = y + wrapping_bounds.y
 
+
 func reflect():
-	var n = ray.get_collision_normal()
-	emit_signal("shootay_collided", ray.get_collision_point(), n)
-	#if ray.get_collider() is Player:
-		#queue_free()
-	stretch_squash( false )
-	vel = vel.bounce( n )
-	rotation_from_velocity_vector( vel )
+	if ray.is_colliding():
+		var n = ray.get_collision_normal()
+		emit_signal("shootay_collided", ray.get_collision_point(), n)
+		#if ray.get_collider() is Player:
+			#queue_free()
+		stretch_squash( false )
+		vel = vel.bounce( n )
+		rotation_from_velocity_vector( vel )
 
 func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	#$AttackComponent.dir = dir
@@ -82,7 +84,7 @@ func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	# -- everything really needs to be normalized, so origin point should be
 	# -- responsible
 	# -- assert is here just in case, doesn't exist in non-debug build
-	assert( is_equal_approx(dir.length(), 1.0)) 
+	# assert( is_equal_approx(dir.length(), 1.0)) 
 	vel = dir * SHOOTING_SPEED                  
 	rotation_from_velocity_vector( dir )
 	stretch_squash( true )
@@ -120,7 +122,7 @@ func set_shootay_collision_layer():
 
 
 func explode(a_shootay: Shootay):
-	if explosion_id > a_shootay.explosion_id:
+	if _id > a_shootay._id:
 		GlobalSignals.emit_signal("shootay_exploded", global_position)
 	queue_free()
 
@@ -131,8 +133,8 @@ func shootay_collided_with_shoootay_fn( other: Shootay):
 	else:
 		if other.is_transmitting_shootay() and is_transmitting_shootay():
 			# -- teleport signal
-			if explosion_id > other.explosion_id:
-				emit_signal( "transmission_collided", (global_position - other.global_position) / 2.0 )
+			if _id > other._id:
+				emit_signal( "transmission_collided", (global_position + other.global_position) / 2.0 )
 			queue_free()
 
 func is_reflecting_shootay() -> bool:

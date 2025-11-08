@@ -20,6 +20,12 @@ func _ready() -> void:
 
 	$EnemyManager.player_ref = the_player
 
+	the_player.boosted.connect( func(pos: Vector2):
+		# -- make a streak along this path
+		
+		# -- blur
+		$PostProcessing.shockwave(pos))
+
 func game_over():
 	# -- slow the tick rate way down for a minute, zoom in on how terrible
 	# -- you are as a player

@@ -1,10 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://c2eah12q8mrq"]
+[gd_scene load_steps=20 format=3 uid="uid://c2eah12q8mrq"]
 
 [ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
 [ext_resource type="Script" uid="uid://qlxe067lrvwq" path="res://player/player.gd" id="1_yw30f"]
 [ext_resource type="Texture2D" uid="uid://dkr8u5nmt6ncg" path="res://assets/T_Random_23.png" id="3_qjkh3"]
 [ext_resource type="Shader" uid="uid://c4a4eplt6ovbr" path="res://player/aim_visual/aim_visual.gdshader" id="4_yw30f"]
+[ext_resource type="Script" uid="uid://b4ga5x2ih2kdf" path="res://player/muzzle_flash.gd" id="5_kb6p2"]
 [ext_resource type="Script" uid="uid://bsylm61xpi4k7" path="res://components/hitbox_component.gd" id="7_boad6"]
 [ext_resource type="Script" uid="uid://ccwxhn5qualum" path="res://player/boost_container.gd" id="8_8t03j"]
 [ext_resource type="Script" uid="uid://ubpvahb2j2x0" path="res://player/boost_trail_line.gd" id="8_hg6s5"]
@@ -12,6 +13,13 @@
 [ext_resource type="Shader" uid="uid://ditunhnmlpyc6" path="res://player/teleport_visual.gdshader" id="10_8t03j"]
 [ext_resource type="Script" uid="uid://bcq8k3p1lmnuy" path="res://player/teleport_container.gd" id="10_ebec5"]
 [ext_resource type="Texture2D" uid="uid://uilgwob7ic0v" path="res://vfx/reusable_seamless_fastnoise_lite.tres" id="11_2ieo8"]
+[ext_resource type="Shader" uid="uid://cvmj0eyhtnn0j" path="res://player/muzzle_flash.gdshader" id="13_kb6p2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wodsf"]
+shader = ExtResource("13_kb6p2")
+shader_parameter/t = 0.0
+shader_parameter/noise_tex = ExtResource("11_2ieo8")
+shader_parameter/src_col = Color(0, 0, 0, 0)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
@@ -44,6 +52,13 @@ BOOSTING_SPEED = 1400.0
 aiming_sprite = NodePath("AimingSprite")
 player_sprite = NodePath("PlayerSprite")
 boost_timer = NodePath("BoostContainer/BoostTimer")
+
+[node name="MuzzleFlash" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_wodsf")
+position = Vector2(47, 0)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("1_rkbax")
+script = ExtResource("5_kb6p2")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_yw30f")

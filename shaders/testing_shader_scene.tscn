@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://cf6l076hllpjp"]
+
+[ext_resource type="Shader" uid="uid://bd6all3c0s5yk" path="res://shaders/testing_shader_scene.gdshader" id="1_otpaa"]
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="2_usfgp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tke7n"]
+shader = ExtResource("1_otpaa")
+shader_parameter/tri_height = 0.5
+
+[node name="TestingShaderScene" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_tke7n")
+texture = ExtResource("2_usfgp")
