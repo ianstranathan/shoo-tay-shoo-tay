@@ -11,6 +11,8 @@ Current Movement variables are stateful
 (can be changed by environmentals, shots etc)
 """
 
+@export var input_manager: InputManager
+
 @export_category("Movement")
 var move_dir: Vector2 = Vector2.ZERO
 @export var SPEED: float = 300.0
@@ -25,25 +27,27 @@ var move_dir: Vector2 = Vector2.ZERO
 @onready var current_decl = DECL
 
 @export_category("Aiming")
-@export var aiming_sprite: Sprite2D
+@export var aiming_manager: Node2D
 @export var player_sprite: Sprite2D
-@export var shooting_line_scale: float = 3.0
-@onready var aiming_sprite_size :Vector2i = aiming_sprite.texture.get_size()
 @export var look_ahead_dist = 100.0
 @export_range(1,20) var rotation_speed: float = 10
 
 # -- this is used to offset aiming reticle
-@onready var _player_tex_size: Vector2 = player_sprite.texture.get_size()
 
-
-var _aim_dir: Vector2 = Vector2.RIGHT
-var _last_aim_dir := _aim_dir
+@export_category("Misc")
+@export var boost_timer: Timer
 var can_shoot: bool # -- to prevent spamming
 
-@export var boost_timer: Timer
+
 
 func _ready() -> void:
-	assert(aiming_sprite)
+	assert(input_manager)
+
+	# --------------------------------------------------
+	aiming_manager.input_manager = input_manager
+	aiming_manager.my_init()
+	# --------------------------------------------------
+	
 	$ReloadTimer.timeout.connect( func(): can_shoot = true)
 	
 	boost_timer.timeout.connect( func():
@@ -66,41 +70,20 @@ func _ready() -> void:
 	$TeleportContainer.teleport_anim_finished.connect( func():
 		Utils.hit_stop(0.05, 0.3))
 
-	# -- copy the hitbox_collision shape?
-	
-func aim_anim(aiming_dir_len: float):
-	# -- translate the position of the aiming sprite
-	# -- to agree with its scaling
-	var _scale = shooting_line_scale * aiming_dir_len # [0, 3]
-	# -- 
-	# NOTE change magic number please
-	aiming_sprite.position.x = lerp(55.0, 0.0, aiming_dir_len) + (_scale * aiming_sprite_size.x/2.0
-																 + 0.05 * _player_tex_size.x * player_sprite.scale.x) 
-	aiming_sprite.material.set_shader_parameter("_scale", aiming_dir_len)
-
 
 func _process(delta: float) -> void:
-	var r_stick_input = Input.get_vector("aim left", "aim right", "aim up", "aim down")
-	move_dir = Input.get_vector("move left", "move right", "move up", "move down")
-	if r_stick_input != Vector2.ZERO:
-		_last_aim_dir = _aim_dir
-		_aim_dir = r_stick_input
-	aim_anim(r_stick_input.length())
-
-	# -- overload visual
-	# player_sprite.material.set_shader_parameter("t", Utils.normalized_timer($ShootayTimer))
+	move_dir = input_manager.movement_vector()
 
 
 func _physics_process(delta: float) -> void:
-	if Input.is_action_just_pressed("shoot reflect"):
+	if input_manager.pressed_action("shoot reflect"):
 		shoot_a_shootay(ShootayGlobals.ShootayValues.REFLECT)
-	elif Input.is_action_just_pressed("shoot transmit"):
+	elif input_manager.pressed_action("shoot transmit"):
 		shoot_a_shootay(ShootayGlobals.ShootayValues.TRANSMIT)
-	
 	# ---------------------------- Turn
-	var dir = _last_aim_dir.normalized();
-	var angle = Vector2.RIGHT.angle_to( dir )
-	#angle = PI / 2.0 + angle
+
+	var angle = Vector2.RIGHT.angle_to( $AimingManager.dir.normalized() )
+
 	global_rotation = lerp_angle(global_rotation,angle,rotation_speed * delta)
 
 	# -- Hittimer visual
@@ -156,19 +139,17 @@ func boost_end_callback():
 	
 	#$BoostContainer.set_trail_active(false)
 
+
 func look_ahead_position() -> Vector2:
-	return look_ahead_dist * _last_aim_dir.normalized()
+	return look_ahead_dist * $AimingManager.dir.normalized()
 
 
 func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 	if can_shoot:
-		#$MuzzleFlash.muzzle_flash(shootay_value)
 		can_shoot = false
-		#var dir: Vector2 = _last_aim_dir.normalized()
-		var dir: Vector2 = _last_aim_dir
 		emit_signal("shot_a_shootay",
-					global_position,# + dir * _player_tex_size.x / 2.0,
-					dir,
+					global_position,
+					$AimingManager.dir.normalized(),
 					shootay_value)
 
 

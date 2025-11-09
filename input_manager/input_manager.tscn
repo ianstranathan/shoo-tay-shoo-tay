@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwcba7qkw7dhb"]
+
+[ext_resource type="Script" uid="uid://drjgsgrs3x1cd" path="res://input_manager/input_manager.gd" id="1_1qhxe"]
+
+[node name="InputManager" type="Node"]
+script = ExtResource("1_1qhxe")
+
+[node name="namespace_helper_2D" type="Node2D" parent="."]
+visible = false

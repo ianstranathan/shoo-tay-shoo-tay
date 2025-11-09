@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=14 format=3 uid="uid://cnjs673hgk6wm"]
 
 [ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bgodmmno8hffy" path="res://main.gd" id="1_lquwl"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cj4e05skrr1ug" path="res://enemies/enemy_manager/enemy_manager.tscn" id="7_kek77"]
 [ext_resource type="Shader" uid="uid://c665h87g6h08y" path="res://post_processing/shockwave.gdshader" id="10_4c57u"]
 [ext_resource type="Script" uid="uid://bnfbldgjulexf" path="res://post_processing_layer.gd" id="10_efxa6"]
+[ext_resource type="PackedScene" uid="uid://dwcba7qkw7dhb" path="res://input_manager/input_manager.tscn" id="12_dg77c"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efxa6"]
 shader = ExtResource("10_4c57u")
@@ -26,7 +27,8 @@ cam_ref = NodePath("FollowRig/ShakePivot/Camera2D")
 
 [node name="Level" parent="." instance=ExtResource("2_7mycd")]
 
-[node name="Player" parent="." instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("input_manager") instance=ExtResource("1_ig7tw")]
+input_manager = NodePath("../InputManager")
 rotation_speed = 20.0
 
 [node name="FollowRig" type="Node2D" parent="." node_paths=PackedStringArray("target")]
@@ -64,3 +66,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(-5428, 278)
+
+[node name="InputManager" parent="." instance=ExtResource("12_dg77c")]

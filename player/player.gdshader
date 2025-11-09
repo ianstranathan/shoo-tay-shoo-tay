@@ -11,7 +11,7 @@ void vertex() {
 	//float s = mix(1., 4., dmg_scale) * (sin( mix(4., 12., dmg_scale * dmg_scale) * anim_t));
 	float m = mix(1., 7., t) * (sin( mix(4., 12., t * t) * anim_t));
 	VERTEX += vec2(sign(VERTEX.x), sign(VERTEX.y)) * m;// (s + m) ;
-	
+
 	// getting hit
 	VERTEX += 20.0 * vec2(sign(VERTEX.x), sign(VERTEX.y)) * exp(-3. * hit_time);
 }
@@ -44,10 +44,10 @@ void fragment() {
 	vec2 uv = 2. * UV - 1.;
 	// -- shape sdf
 	uv = rot(PI / 2.0) * uv;
-   
+
 	float _sdf = sdTriangleIsosceles( uv + vec2(0., 0.6 * tri_height), vec2(0.35 * tri_height, tri_height));
 	float shape_mask = (1. - smoothstep(0., 0.05, _sdf));
-	
+
 	//float _sdf = shape_mask;
 	// -------------- overcharge glow
 	float dist = 1. / clamp(_sdf, 0.001, 1.);//mask = smoothstep(0.01, 0.04, mask);
@@ -82,8 +82,8 @@ void fragment() {
 
 	// this is just trying to play with the time curve on the mixing
 	float _t = smoothstep(0., 1., t);
-	
+
 	COLOR = c + vec4(mix(vec3(0.), charging_col, t), mix(c.w, charging_alpha * charging_alpha, _t));
-	
+
 	COLOR.xyz += exp(-3.0 * hit_time) * shape_mask;
 }
