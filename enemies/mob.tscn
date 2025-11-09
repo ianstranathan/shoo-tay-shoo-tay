@@ -29,7 +29,8 @@ collision_mask = 3
 script = ExtResource("1_b8st1")
 flash_decay_modifier = 3.0
 speed = 200.0
-steering_strength = 5.0
+steering_strength = 2.0
+rotation_speed = 4.0
 detection_radius = 20.0
 stop_distance = 100.0
 
