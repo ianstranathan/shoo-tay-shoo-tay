@@ -47,3 +47,4 @@ script = ExtResource("7_272bh")
 [node name="Mob" parent="EnemyManager" instance=ExtResource("7_5vw27")]
 position = Vector2(605, 128)
 steering_strength = null
+rotation_speed = null
