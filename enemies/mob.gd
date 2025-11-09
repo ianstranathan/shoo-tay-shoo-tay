@@ -43,7 +43,7 @@ func _ready() -> void:
 	
 	#-----------------------------Timers
 	$MeleeCooldownTimer.timeout.connect( func(): can_hit = true)
-	$AttackPauseTimer.timeout.connect(attack)
+	$AttackPauseTimer.timeout.connect(execute_attack)
 	$MoveDelayTimer.timeout.connect( func(): can_move = true)
 	
 	# ----------------------------- Signals
@@ -153,7 +153,7 @@ func start_attack():
 		is_attacking = true
 		$AttackPauseTimer.start()
 		
-func attack():
+func execute_attack():
 	var meleeScene = attack_comp.instantiate()
 	add_child(meleeScene)
 	meleeScene.global_position = $AttackSpawnPoint.global_position
