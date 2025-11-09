@@ -19,6 +19,8 @@ All relevant data is exposed in editor:
 
 @export_category("Movement")
 @export var speed: float = 150.0
+@export var steering_strength: float = 0.1
+@export var rotation_speed: float = 8
 
 @export_category("Behavior")
 @export var detection_radius: float = 24
@@ -37,8 +39,9 @@ func _ready() -> void:
 	
 	set_col(src_color)
 	
-	set_det_radius(detection_radius)
+	set_det_radius(detection_radius) #radius to look for enemy
 	
+	#-----------------------------Timers
 	$MeleeCooldownTimer.timeout.connect( func(): can_hit = true)
 	$AttackPauseTimer.timeout.connect(attack)
 	$MoveDelayTimer.timeout.connect( func(): can_move = true)
@@ -68,7 +71,7 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	
 	if target and chase_player and !is_attacking:
-		move_to_target()
+		move_to_target(delta)
 
 
 func set_radius( r: float) -> void:
@@ -102,7 +105,9 @@ func set_det_radius( r: float) -> void:
 func set_movement_target(movement_target: Vector2):
 	navigation_agent.target_position = movement_target
 	
-func player_lost_found(lost_found)-> void:#should we just set this directly with signal?
+"I like this to handle different things when the enemy finds and loses the target
+this might end up being a heavy handed way to handle this but works for now"
+func player_lost_found(lost_found)-> void:
 	match lost_found:
 		"Lost":
 			chase_player = false
@@ -111,10 +116,17 @@ func player_lost_found(lost_found)-> void:#should we just set this directly with
 		"Found":
 			chase_player = true
 			$MoveDelayTimer.start()
-			
-func move_to_target():
+
+"TODO: 
+* Throttle set_movement_target either with a timer or track last known position 
+	and check difference or a combination of both. 
+* Dont call start_attack when navigation finishes, write a function to check distance to target
+* Add line of sight
+* Flocking behavior or some kind of steering to avoid obstacles
+* accel and decel so enemy doesnt feel so weightless
+"
+func move_to_target(delta: float) -> void:
 	if can_move:
-		look_at(target.global_position)
 		set_movement_target( target.global_position )
 		if navigation_agent.is_navigation_finished():
 			start_attack() #should set up function to check distance instead of calling here
@@ -122,7 +134,16 @@ func move_to_target():
 		var current_agent_position: Vector2 = global_position
 		var next_path_position: Vector2 = navigation_agent.get_next_path_position()
 		
-		velocity = current_agent_position.direction_to(next_path_position) * speed
+		#Rotation
+		var desired_dir = current_agent_position.direction_to(next_path_position)
+		var desired_ang = desired_dir.angle()
+		rotation = lerp_angle(rotation, desired_ang, rotation_speed * delta)
+		
+		#Velocity
+		var desired_vel = desired_dir * speed
+		var steering_force = (desired_vel - velocity) * steering_strength
+		velocity += steering_force
+		velocity = velocity.limit_length(speed)
 		move_and_slide()
 
 func start_attack():
