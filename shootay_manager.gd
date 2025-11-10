@@ -15,7 +15,7 @@ var cam_ref: Camera2D
 
 @export var transmit_wrapping_buffer := 10.0
 
-func make_shootay(pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.ShootayValues):
+func make_shootay(pos: Vector2, vel: Vector2, shootay_value:ShootayGlobals.ShootayValues):
 	var shootay = shootay_scene.instantiate()
 	# -- what things does it need to know about before starting tick?
 	# -- it has to at least clear the shooting origin / player
@@ -27,7 +27,7 @@ func make_shootay(pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.Shoot
 	shootay.wrapping_buffer = transmit_wrapping_buffer
 	# -- magic number is just to nudge it past where it needs to go
 	var coll_shape_offset = 0.7 * shootay.get_node("Area2D/CollisionShape2D").shape.height / 2.0
-	shootay.global_position = pos + dir.normalized() * coll_shape_offset
+	shootay.global_position = pos + vel.normalized() * coll_shape_offset
 	
 	# -- relay signal up
 	shootay.shootay_collided.connect( func(pos, normal): 
@@ -38,4 +38,4 @@ func make_shootay(pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.Shoot
 	
 	add_child(shootay)
 	
-	shootay.shoot( dir, shootay_value)
+	shootay.shoot( vel, shootay_value)

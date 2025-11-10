@@ -11,10 +11,10 @@ void fragment() {
 	float d = length(uv);
 	vec4 n_sample = texture(noise_tex, 0.3 * vec2(d, atan(uv.y, uv.x)));
 	float disp = step(t, n_sample.x);
-	float mask = 1. - smoothstep(0.6, 0.65, d + 0.5 * n_sample.x);
+	float mask = 1. - smoothstep(0.9, 0.95, d + 0.7 * n_sample.x);
 	mask *= disp;
 
 	//vec3 col = src_col.xyz * mask;
-	vec3 col = vec3(0.);
+	vec3 col = vec3(1.);
 	COLOR = vec4( 1.2 * col, mask);
 }

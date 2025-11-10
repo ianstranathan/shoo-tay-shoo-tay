@@ -38,9 +38,24 @@ func aiming_vector(from_position=null):
 		return ($namespace_helper_2D.get_global_mouse_position() - from_position)
 
 
-func pressed_action(action_name: String):
+func just_pressed_action(action_name: String):
 	return Input.is_action_just_pressed(action_name)
 
+
+func just_released_action(action_name: String) -> bool:
+	return Input.is_action_just_released(action_name)
+
+
+var last_pressed_action
+func pressed_action(action_name: String) -> bool: #, return_name=false):
+	var rez = Input.is_action_pressed(action_name)
+	if rez:
+		if !last_pressed_action or last_pressed_action != action_name:
+			last_pressed_action = action_name
+	return rez
+
+func get_last_pressed_action() -> StringName:
+	return last_pressed_action
 
 func set_input_source(_source_type: InputSourceType):
 	if current_input_source != _source_type:

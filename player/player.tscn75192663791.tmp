@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://c2eah12q8mrq"]
+[gd_scene load_steps=20 format=3 uid="uid://c2eah12q8mrq"]
 
 [ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
@@ -14,8 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://uilgwob7ic0v" path="res://vfx/reusable_seamless_fastnoise_lite.tres" id="11_2ieo8"]
 [ext_resource type="Script" uid="uid://pqsrvf3go1sf" path="res://player/aiming_manager.gd" id="12_yllr7"]
 [ext_resource type="Shader" uid="uid://ddtmmngp2mvxn" path="res://player/mouse_aim_visual.gdshader" id="14_kb6p2"]
-[ext_resource type="PackedScene" uid="uid://d4cvrx4dh4ypj" path="res://particle_effects/shootay_charge/shootay_charge.tscn" id="15_wodsf"]
-[ext_resource type="Shader" uid="uid://cvmj0eyhtnn0j" path="res://player/muzzle_flash.gdshader" id="16_32hag"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
@@ -42,12 +40,6 @@ shader_parameter/src_col = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wodsf"]
 shader = ExtResource("14_kb6p2")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tqiix"]
-shader = ExtResource("16_32hag")
-shader_parameter/t = 0.7
-shader_parameter/noise_tex = ExtResource("11_2ieo8")
-shader_parameter/src_col = Color(0, 0, 0, 1)
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("aiming_manager", "player_sprite", "boost_timer")]
 collision_layer = 2
@@ -129,12 +121,3 @@ texture = ExtResource("1_rkbax")
 
 [node name="ShootayChargeTimer" type="Timer" parent="."]
 wait_time = 3.0
-one_shot = true
-
-[node name="ShootayCharge" parent="." instance=ExtResource("15_wodsf")]
-
-[node name="FullChargeVisual" type="Sprite2D" parent="."]
-visible = false
-material = SubResource("ShaderMaterial_tqiix")
-scale = Vector2(1.5, 1.5)
-texture = ExtResource("1_rkbax")

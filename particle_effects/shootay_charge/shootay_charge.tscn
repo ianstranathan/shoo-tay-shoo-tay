@@ -1,0 +1,48 @@
+[gd_scene load_steps=9 format=3 uid="uid://d4cvrx4dh4ypj"]
+
+[ext_resource type="Texture2D" uid="uid://c6jglv68yh3bv" path="res://assets/floaty_64.png" id="1_v723r"]
+[ext_resource type="Script" uid="uid://f6n0epj61dwh" path="res://particle_effects/shootay_charge/shootay_charge.gd" id="2_m4cqi"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_m4cqi"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 7
+particles_anim_v_frames = 7
+particles_anim_loop = true
+
+[sub_resource type="Gradient" id="Gradient_v723r"]
+colors = PackedColorArray(0.193, 0.591, 0.938, 0.663, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_kcs11"]
+gradient = SubResource("Gradient_v723r")
+
+[sub_resource type="Curve" id="Curve_v723r"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.389706, 0.977528), -0.318352, -0.318352, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_kcs11"]
+curve = SubResource("Curve_v723r")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v723r"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 100.0
+emission_ring_radius = 80.0
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
+radial_velocity_min = -200.0
+radial_velocity_max = -100.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 3.0
+scale_curve = SubResource("CurveTexture_kcs11")
+color_ramp = SubResource("GradientTexture1D_kcs11")
+
+[node name="ShootayCharge" type="GPUParticles2D"]
+material = SubResource("CanvasItemMaterial_m4cqi")
+emitting = false
+amount = 40
+texture = ExtResource("1_v723r")
+process_material = SubResource("ParticleProcessMaterial_v723r")
+script = ExtResource("2_m4cqi")

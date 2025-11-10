@@ -7,7 +7,7 @@ var shootay_value: ShootayGlobals.ShootayValues
 var vel: Vector2 = Vector2.ZERO
 var dist: float = 0.0
 @export var MAX_DISTANCE: float = 10000
-@export var SHOOTING_SPEED: float = 600.0
+#@export var SHOOTING_SPEED: float = 600.0
 @onready var ray = $RayCast2D
 
 signal shootay_collided( pos: Vector2, normal: Vector2)
@@ -71,7 +71,7 @@ func reflect():
 		vel = vel.bounce( n )
 		rotation_from_velocity_vector( vel )
 
-func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
+func shoot(_vel: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	#$AttackComponent.dir = dir
 	$AttackComponent.parent = self # -- this is so I can get the direction its going
 								   # -- not ideal
@@ -79,16 +79,10 @@ func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	shootay_value = _shootay_val
 	$ShootayColorComponent.set_shootay_visual( shootay_value )
 	set_shootay_collision_layer()
-	
-	# -- check to make sure we're not normalizing  multiple times
-	# -- everything really needs to be normalized, so origin point should be
-	# -- responsible
-	# -- assert is here just in case, doesn't exist in non-debug build
-	# assert( is_equal_approx(dir.length(), 1.0)) 
-	vel = dir * SHOOTING_SPEED                  
-	rotation_from_velocity_vector( dir )
+	vel = _vel                
+	rotation_from_velocity_vector( _vel )
 	stretch_squash( true )
-	GlobalSignals.emit_signal("shake_camera", {"type": "Shootay", "amount": 20, "dir": dir})
+	GlobalSignals.emit_signal("shake_camera", {"type": "Shootay", "amount": 20, "dir": _vel})
 
 
 func stretch_squash(stretch: bool) -> void:

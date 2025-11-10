@@ -32,17 +32,24 @@ var move_dir: Vector2 = Vector2.ZERO
 @export var look_ahead_dist = 100.0
 @export_range(1,20) var rotation_speed: float = 10
 
+@export_category("Shooting")
+@export var MAX_SHOOT_SPEED: float = 800 # -- really this should account for min speed (e.g 750)
+@export var MIN_SHOOT_SPEED: float = 50
 # -- this is used to offset aiming reticle
 
 @export_category("Misc")
 @export var boost_timer: Timer
-var can_shoot: bool # -- to prevent spamming
 
+var can_shoot: bool # -- to prevent spamming
+var charge_shot_speed_ratio: float = 0.0
 
 
 func _ready() -> void:
 	assert(input_manager)
-
+	
+	# --------------------------------------------------
+	$ShootayChargeTimer.timeout.connect( func():
+		charge_shot_speed_ratio = 1.0)
 	# --------------------------------------------------
 	aiming_manager.input_manager = input_manager
 	aiming_manager.my_init()
@@ -76,10 +83,13 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if input_manager.pressed_action("shoot reflect"):
-		shoot_a_shootay(ShootayGlobals.ShootayValues.REFLECT)
-	elif input_manager.pressed_action("shoot transmit"):
-		shoot_a_shootay(ShootayGlobals.ShootayValues.TRANSMIT)
+	# ---------------------------- shoot & charge
+	if !$ShootayChargeTimer.is_stopped():
+		var _ratio = 1. - ($ShootayChargeTimer.time_left / $ShootayChargeTimer.wait_time)
+		charge_shot_speed_ratio = _ratio
+		$ShootayCharge.charge_up(_ratio)
+	charge_shootay()
+	
 	# ---------------------------- Turn
 
 	var angle = Vector2.RIGHT.angle_to( $AimingManager.dir.normalized() )
@@ -146,13 +156,75 @@ func look_ahead_position() -> Vector2:
 
 func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 	if can_shoot:
+		var shootay_speed = MAX_SHOOT_SPEED * charge_shot_speed_ratio + \
+							MIN_SHOOT_SPEED
 		can_shoot = false
+		charge_shot_speed_ratio = 0.0
 		emit_signal("shot_a_shootay",
 					global_position,
-					$AimingManager.dir.normalized(),
+					$AimingManager.dir.normalized() * shootay_speed,
 					shootay_value)
-
+		
 
 func teleport(pos: Vector2):
 	$TeleportContainer.teleport()
 	global_position = pos
+
+
+var is_charging: bool = false
+func charge_shootay():
+	var is_any_shoot_action_held = input_manager.pressed_action("shoot reflect") or \
+								   input_manager.pressed_action("shoot transmit")
+	if is_any_shoot_action_held and !is_charging:
+		is_charging = true
+		# -- timer to make visual or sound proportional to
+		$ShootayChargeTimer.start()
+		# -- start charge particles
+		$ShootayCharge.start_charging(shootay_val_from_action_name( 
+			input_manager.get_last_pressed_action()))
+		
+	elif !is_any_shoot_action_held and is_charging:
+		is_charging = false
+		shoot_a_shootay(  shootay_val_from_action_name( input_manager.get_last_pressed_action()))
+
+
+func shootay_val_from_action_name( val: StringName) -> ShootayGlobals.ShootayValues:
+	$ShootayCharge.stop_charging()
+	if val == "shoot reflect":
+		return ShootayGlobals.ShootayValues.REFLECT
+	else:
+		return ShootayGlobals.ShootayValues.TRANSMIT
+	
+# -- TODO
+# -- move me to a separate object/ area
+#var flashing_tween: Tween
+#func flashing_charge():
+	#flashing_tween = create_tween()
+	#flashing_tween.set_loops(0) # 0 => infinite loop
+	#
+	## 3. Use chain() to ensure the second tween only starts after the first one completes
+	#my_tween.chain()
+	#
+	## --- Part 1: Fade In (0.0 to 1.0) ---
+	#my_tween.tween_property(
+		#$FullChargeVisual, 
+		#"modulate:a", # Target property: the alpha channel of the modulate color
+		#1.0,          # Final value: fully opaque
+		#1.0           # Duration: 1.0 second
+	#)
+	## Optional: Customize the transition and easing curve
+	#.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+#
+	## --- Part 2: Fade Out (1.0 back to 0.0) ---
+	#my_tween.tween_property(
+		#self, 
+		#"modulate:a", # Target property
+		#0.0,          # Final value: fully transparent
+		#1.0           # Duration: 1.0 second
+	#)
+	## Optional: Match the transition and easing
+	#.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+#
+#func stop_ping_pong():
+	#if is_instance_valid(my_tween):
+		#my_tween.kill()
