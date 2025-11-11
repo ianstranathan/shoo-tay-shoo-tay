@@ -30,7 +30,7 @@ var move_dir: Vector2 = Vector2.ZERO
 @export var aiming_manager: Node2D
 @export var player_sprite: Sprite2D
 @export var look_ahead_dist = 100.0
-@export_range(1,20) var rotation_speed: float = 10
+
 
 @export_category("Shooting")
 @export var MAX_SHOOT_SPEED: float = 800 # -- really this should account for min speed (e.g 750)
@@ -47,6 +47,8 @@ var charge_shot_speed_ratio: float = 0.0
 func _ready() -> void:
 	assert(input_manager)
 	
+	$AimingManager.aim_rotated.connect( func( r: float):
+		global_rotation = r)
 	# --------------------------------------------------
 	$ShootayChargeTimer.timeout.connect( func():
 		charge_shot_speed_ratio = 1.0)
@@ -91,11 +93,7 @@ func _physics_process(delta: float) -> void:
 	charge_shootay()
 	
 	# ---------------------------- Turn
-
-	var angle = Vector2.RIGHT.angle_to( $AimingManager.dir.normalized() )
-
-	global_rotation = lerp_angle(global_rotation,angle,rotation_speed * delta)
-
+	
 	# -- Hittimer visual
 	if !$HitTimer.is_stopped():
 		$PlayerSprite.material.set_shader_parameter("hit_time", Utils.normalized_timer($HitTimer))
@@ -151,7 +149,7 @@ func boost_end_callback():
 
 
 func look_ahead_position() -> Vector2:
-	return look_ahead_dist * $AimingManager.dir.normalized()
+	return look_ahead_dist * $AimingManager.get_aim_dir()
 
 
 func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
@@ -162,7 +160,7 @@ func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 		charge_shot_speed_ratio = 0.0
 		emit_signal("shot_a_shootay",
 					global_position,
-					$AimingManager.dir.normalized() * shootay_speed,
+					$AimingManager.get_aim_dir() * shootay_speed,
 					shootay_value)
 		
 
@@ -194,37 +192,3 @@ func shootay_val_from_action_name( val: StringName) -> ShootayGlobals.ShootayVal
 		return ShootayGlobals.ShootayValues.REFLECT
 	else:
 		return ShootayGlobals.ShootayValues.TRANSMIT
-	
-# -- TODO
-# -- move me to a separate object/ area
-#var flashing_tween: Tween
-#func flashing_charge():
-	#flashing_tween = create_tween()
-	#flashing_tween.set_loops(0) # 0 => infinite loop
-	#
-	## 3. Use chain() to ensure the second tween only starts after the first one completes
-	#my_tween.chain()
-	#
-	## --- Part 1: Fade In (0.0 to 1.0) ---
-	#my_tween.tween_property(
-		#$FullChargeVisual, 
-		#"modulate:a", # Target property: the alpha channel of the modulate color
-		#1.0,          # Final value: fully opaque
-		#1.0           # Duration: 1.0 second
-	#)
-	## Optional: Customize the transition and easing curve
-	#.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-#
-	## --- Part 2: Fade Out (1.0 back to 0.0) ---
-	#my_tween.tween_property(
-		#self, 
-		#"modulate:a", # Target property
-		#0.0,          # Final value: fully transparent
-		#1.0           # Duration: 1.0 second
-	#)
-	## Optional: Match the transition and easing
-	#.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-#
-#func stop_ping_pong():
-	#if is_instance_valid(my_tween):
-		#my_tween.kill()
