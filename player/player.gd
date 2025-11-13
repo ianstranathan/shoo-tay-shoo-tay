@@ -41,17 +41,21 @@ var move_dir: Vector2 = Vector2.ZERO
 @export var boost_timer: Timer
 
 var can_shoot: bool # -- to prevent spamming
-var charge_shot_speed_ratio: float = 0.0
 
 
 func _ready() -> void:
 	assert(input_manager)
-	
+	$ChargeManager.input_manager = input_manager
+	$ChargeManager.charge_released.connect( func(val: ShootayGlobals.ShootayValues,
+												 fn: Callable):
+		shoot_a_shootay( val )
+		fn.call())
+	$ChargeManager.finished_charging.connect( func(): pass)
+	# --------------------------------------------------
 	$AimingManager.aim_rotated.connect( func( r: float):
 		global_rotation = r)
 	# --------------------------------------------------
-	$ShootayChargeTimer.timeout.connect( func():
-		charge_shot_speed_ratio = 1.0)
+	
 	# --------------------------------------------------
 	aiming_manager.input_manager = input_manager
 	aiming_manager.my_init()
@@ -85,15 +89,6 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# ---------------------------- shoot & charge
-	if !$ShootayChargeTimer.is_stopped():
-		var _ratio = 1. - ($ShootayChargeTimer.time_left / $ShootayChargeTimer.wait_time)
-		charge_shot_speed_ratio = _ratio
-		$ShootayCharge.charge_up(_ratio)
-	charge_shootay()
-	
-	# ---------------------------- Turn
-	
 	# -- Hittimer visual
 	if !$HitTimer.is_stopped():
 		$PlayerSprite.material.set_shader_parameter("hit_time", Utils.normalized_timer($HitTimer))
@@ -112,8 +107,8 @@ func _physics_process(delta: float) -> void:
 											current_decl * delta)
 	move_and_slide()
 
-var boost_dir:= Vector2.ZERO
 
+var boost_dir:= Vector2.ZERO
 # I wish I could make a simple closure around these guys, but whatever
 var pre_boost_speed: float
 var pre_boost_accl: float
@@ -154,10 +149,9 @@ func look_ahead_position() -> Vector2:
 
 func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 	if can_shoot:
-		var shootay_speed = MAX_SHOOT_SPEED * charge_shot_speed_ratio + \
+		var shootay_speed = MAX_SHOOT_SPEED * $ChargeManager.get_charge_ratio() + \
 							MIN_SHOOT_SPEED
 		can_shoot = false
-		charge_shot_speed_ratio = 0.0
 		emit_signal("shot_a_shootay",
 					global_position,
 					$AimingManager.get_aim_dir() * shootay_speed,
@@ -169,26 +163,25 @@ func teleport(pos: Vector2):
 	global_position = pos
 
 
-var is_charging: bool = false
-func charge_shootay():
-	var is_any_shoot_action_held = input_manager.pressed_action("shoot reflect") or \
-								   input_manager.pressed_action("shoot transmit")
-	if is_any_shoot_action_held and !is_charging:
-		is_charging = true
-		# -- timer to make visual or sound proportional to
-		$ShootayChargeTimer.start()
-		# -- start charge particles
-		$ShootayCharge.start_charging(shootay_val_from_action_name( 
-			input_manager.get_last_pressed_action()))
-		
-	elif !is_any_shoot_action_held and is_charging:
-		is_charging = false
-		shoot_a_shootay(  shootay_val_from_action_name( input_manager.get_last_pressed_action()))
-
-
-func shootay_val_from_action_name( val: StringName) -> ShootayGlobals.ShootayValues:
-	$ShootayCharge.stop_charging()
-	if val == "shoot reflect":
-		return ShootayGlobals.ShootayValues.REFLECT
-	else:
-		return ShootayGlobals.ShootayValues.TRANSMIT
+#var is_charging: bool = false
+#func charge_shootay():
+	#var is_any_shoot_action_held = input_manager.pressed_action("shoot reflect") or \
+								   #input_manager.pressed_action("shoot transmit")
+	#if is_any_shoot_action_held and !is_charging:
+		#is_charging = true
+		## -- timer to make visual or sound proportional to
+		#$ShootayChargeTimer.start()
+		## -- start charge particles
+		#$ShootayCharge.start_charging(shootay_val_from_action_name( 
+			#input_manager.get_last_pressed_action()))
+#
+	#elif !is_any_shoot_action_held and is_charging:
+		#is_charging = false
+		#shoot_a_shootay(  shootay_val_from_action_name( input_manager.get_last_pressed_action()))
+#
+#
+#func shootay_val_from_action_name( val: StringName) -> ShootayGlobals.ShootayValues:
+	#if val == "shoot reflect":
+		#return ShootayGlobals.ShootayValues.REFLECT
+	#else:
+		#return ShootayGlobals.ShootayValues.TRANSMIT
