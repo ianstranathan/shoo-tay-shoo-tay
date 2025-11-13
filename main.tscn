@@ -45,22 +45,6 @@ script = ExtResource("7_272bh")
 [node name="EnemyManager" parent="." instance=ExtResource("7_kek77")]
 
 [node name="Mob" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-1204, -265)
-
-[node name="Mob7" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-483, -512)
-
-[node name="Mob6" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-1453, -588)
-
-[node name="Mob5" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-947, 473)
-
-[node name="Mob4" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(402, -521)
-
-[node name="Mob2" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(561, 511)
-
-[node name="Mob3" parent="EnemyManager" instance=ExtResource("7_5vw27")]
-position = Vector2(-1007, -728)
+position = Vector2(605, 128)
+steering_strength = null
+rotation_speed = null
