@@ -52,6 +52,7 @@ script = ExtResource("7_272bh")
 
 [node name="EnemyManager" parent="." instance=ExtResource("7_kek77")]
 
+<<<<<<< HEAD
 [node name="PostProcessing" type="CanvasLayer" parent="." node_paths=PackedStringArray("cam")]
 script = ExtResource("10_efxa6")
 cam = NodePath("../FollowRig/ShakePivot/Camera2D")
@@ -67,3 +68,9 @@ grow_vertical = 2
 pivot_offset = Vector2(-5428, 278)
 
 [node name="InputManager" parent="." instance=ExtResource("12_dg77c")]
+=======
+[node name="Mob" parent="EnemyManager" instance=ExtResource("7_5vw27")]
+position = Vector2(605, 128)
+steering_strength = null
+rotation_speed = null
+>>>>>>> dc6579b3b689d91450e6075c40f5b1d76903ad40

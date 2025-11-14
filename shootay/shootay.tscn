@@ -59,4 +59,3 @@ metadata/_custom_type_script = "uid://cexxvyi72nkrp"
 [node name="AttackComponent" type="Node" parent="."]
 script = ExtResource("7_8412e")
 damage = 25.0
-metadata/_custom_type_script = "uid://yt0hblrwwe6h"
