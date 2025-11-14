@@ -1,7 +1,7 @@
 extends Node2D
 
 var shootay_easing_fn = null
-@onready var shoot_timer: Timer = $ShootShakeTimer
+@onready var shoot_shake_timer: Timer = $ShootShakeTimer
 
 func _ready() -> void:
 	GlobalSignals.shake_camera.connect(shake)
@@ -10,7 +10,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	var offset := Vector2.ZERO
 
-	if !shoot_timer.is_stopped():
+	if !shoot_shake_timer.is_stopped():
 		var t: float = Utils.normalized_timer($ShootShakeTimer)
 		offset = shootay_easing_fn.call(t)
 	else:
@@ -25,7 +25,8 @@ func shake(data: Dictionary):
 	match data.type:
 		"Shootay":
 			shootay_easing_fn = func(t): return data.amount * inverted_parabola(t) * data.dir.normalized()
-			shoot_timer.start()
+			shoot_shake_timer.start()
+		#"Boost":
 			
 # -- this is just something extemporaneously cooked up, can be whatever
 func inverted_parabola(t: float):

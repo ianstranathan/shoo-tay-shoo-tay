@@ -1,11 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://c2eah12q8mrq"]
+[gd_scene load_steps=20 format=3 uid="uid://c2eah12q8mrq"]
 
 [ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
 [ext_resource type="Script" uid="uid://qlxe067lrvwq" path="res://player/player.gd" id="1_yw30f"]
 [ext_resource type="Texture2D" uid="uid://dkr8u5nmt6ncg" path="res://assets/T_Random_23.png" id="3_qjkh3"]
 [ext_resource type="Shader" uid="uid://c4a4eplt6ovbr" path="res://player/aim_visual/aim_visual.gdshader" id="4_yw30f"]
-
 [ext_resource type="Script" uid="uid://bsylm61xpi4k7" path="res://components/hitbox_component.gd" id="7_boad6"]
 [ext_resource type="Script" uid="uid://ccwxhn5qualum" path="res://player/boost_container.gd" id="8_8t03j"]
 [ext_resource type="Script" uid="uid://ubpvahb2j2x0" path="res://player/boost_trail_line.gd" id="8_hg6s5"]
@@ -15,8 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://uilgwob7ic0v" path="res://vfx/reusable_seamless_fastnoise_lite.tres" id="11_2ieo8"]
 [ext_resource type="Script" uid="uid://pqsrvf3go1sf" path="res://player/aiming_manager.gd" id="12_yllr7"]
 [ext_resource type="Shader" uid="uid://ddtmmngp2mvxn" path="res://player/mouse_aim_visual.gdshader" id="14_kb6p2"]
-[ext_resource type="Shader" uid="uid://cvmj0eyhtnn0j" path="res://player/fully_charged_visual.gdshader" id="16_32hag"]
-[ext_resource type="Script" uid="uid://da5u341rusojd" path="res://player/charge_manager.gd" id="16_tqiix"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
@@ -26,12 +23,6 @@ shader_parameter/boost_time = 0.0
 shader_parameter/hit_time = 4.0
 shader_parameter/src_col = Color(1.68458e-07, 0.358155, 0.244663, 1)
 shader_parameter/cracked_tex = ExtResource("3_qjkh3")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tqiix"]
-shader = ExtResource("16_32hag")
-shader_parameter/t = 1.0
-shader_parameter/noise_tex = ExtResource("11_2ieo8")
-shader_parameter/src_col = Color(0, 0, 0, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_boad6"]
 radius = 50.0
@@ -52,7 +43,6 @@ shader = ExtResource("14_kb6p2")
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("aiming_manager", "player_sprite", "boost_timer")]
 collision_layer = 2
-
 collision_mask = 17
 script = ExtResource("1_yw30f")
 BOOSTING_SPEED = 1400.0
@@ -65,27 +55,15 @@ material = SubResource("ShaderMaterial_yw30f")
 scale = Vector2(2, 2)
 texture = ExtResource("1_rkbax")
 
-[node name="ChargeManager" type="Node2D" parent="."]
-script = ExtResource("16_tqiix")
-
-[node name="ShootayChargeTimer" type="Timer" parent="ChargeManager"]
-wait_time = 3.0
-one_shot = true
-
-[node name="FullChargeVisual" type="Sprite2D" parent="ChargeManager"]
-z_index = -5
-material = SubResource("ShaderMaterial_tqiix")
-scale = Vector2(1.5, 1.5)
-texture = ExtResource("1_rkbax")
-
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("8_rgyib")
 metadata/_custom_type_script = "uid://dtveseykhco0l"
 
-[node name="HitboxComponent" type="Area2D" parent="." groups=["Player"]]
+[node name="HitboxComponent" type="Area2D" parent="."]
 collision_layer = 2
 collision_mask = 12
 script = ExtResource("7_boad6")
+metadata/_custom_type_script = "uid://bsylm61xpi4k7"
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitboxComponent"]
 visible = false
@@ -131,7 +109,6 @@ one_shot = true
 script = ExtResource("12_yllr7")
 controller_aiming_sprite = NodePath("ControllerAimingSprite")
 mouse_aiming_sprite = NodePath("MouseAimingSprite")
-rotation_speed = 20.0
 
 [node name="ControllerAimingSprite" type="Sprite2D" parent="AimingManager"]
 material = SubResource("ShaderMaterial_qjkh3")
@@ -141,3 +118,6 @@ texture = ExtResource("1_rkbax")
 visible = false
 material = SubResource("ShaderMaterial_wodsf")
 texture = ExtResource("1_rkbax")
+
+[node name="ShootayChargeTimer" type="Timer" parent="."]
+wait_time = 3.0

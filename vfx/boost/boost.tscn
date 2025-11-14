@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bd1yphhypckcl"]
+
+[ext_resource type="Script" uid="uid://bkmmsclg8i0yh" path="res://vfx/boost/boost.gd" id="1_sk4ks"]
+
+[node name="Boost" type="Node2D"]
+script = ExtResource("1_sk4ks")

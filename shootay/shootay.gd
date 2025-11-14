@@ -7,24 +7,32 @@ var shootay_value: ShootayGlobals.ShootayValues
 var vel: Vector2 = Vector2.ZERO
 var dist: float = 0.0
 @export var MAX_DISTANCE: float = 10000
-@export var SHOOTING_SPEED: float = 600.0
+#@export var SHOOTING_SPEED: float = 600.0
 @onready var ray = $RayCast2D
 
 signal shootay_collided( pos: Vector2, normal: Vector2)
+signal transmission_collided( shootay_A: Shootay, shootay_B: Shootay)
+signal transmission_shot_wrapped( shootay: Shootay)
 
-# -- NOTE
-var explosion_id: int
+# -- NOTE shootay manager
+var _id: int
+var cam_ref: Camera2D # -- assigned when shot if shootay value is transmit
+var player_ref: Player
 
-# -- NOTE
 var wrapping_bounds: Vector2
+var wrapping_buffer: float
 
 func _ready() -> void:
-	var _b = ShootayGlobals.wrapping_buffer
-	wrapping_bounds += Vector2(_b, _b)
+	#assert(shootay_value)
+	#if shootay_value == ShootayGlobals.ShootayValues.TRANSMIT:
+	assert(cam_ref and player_ref)
+	wrapping_bounds = cam_ref.get_viewport().size
+	assert(wrapping_buffer)
+	wrapping_bounds += Vector2(wrapping_buffer, wrapping_buffer)
 	# -- there is a unique id given by manager to resolve who explodes
 	# -- to prevent multiple explosions
-	$Area2D.shootay_collision.connect( func(p): explode( p ))
-
+	$Area2D.shootay_collided_with_shoootay.connect( shootay_collided_with_shoootay_fn )
+	
 
 func _physics_process(delta: float) -> void:
 	var delta_pos = vel * delta
@@ -32,10 +40,37 @@ func _physics_process(delta: float) -> void:
 	global_position += delta_pos
 	if dist > MAX_DISTANCE:
 		queue_free()
+	else:
+		if is_reflecting_shootay():
+			reflect()
+		else:
+			wrap_viewport()
 
+
+func wrap_viewport():
+	var x = player_ref.global_position.x
+	var y = player_ref.global_position.y
+	
+	var no_longer_active_for_teleport: bool = false
+	if global_position.x > x + wrapping_bounds.x:
+		global_position.x = x - wrapping_bounds.x
+		no_longer_active_for_teleport = true
+	elif global_position.x < x - wrapping_bounds.x:
+		global_position.x = x + wrapping_bounds.x
+		no_longer_active_for_teleport = true
+	elif global_position.y > y + wrapping_bounds.y:
+		global_position.y = y - wrapping_bounds.y
+		no_longer_active_for_teleport = true
+	elif global_position.y < y - wrapping_bounds.y:
+		global_position.y = y + wrapping_bounds.y
+		no_longer_active_for_teleport = true
+	
+	if no_longer_active_for_teleport and shootay_value == ShootayGlobals.ShootayValues.TRANSMIT:
+		emit_signal("transmission_shot_wrapped", self)
+
+
+func reflect():
 	if ray.is_colliding():
-		# -- particle released should be dependent on the collider, but just one
-		# -- for now
 		var n = ray.get_collision_normal()
 		emit_signal("shootay_collided", ray.get_collision_point(), n)
 		#if ray.get_collider() is Player:
@@ -43,29 +78,20 @@ func _physics_process(delta: float) -> void:
 		stretch_squash( false )
 		vel = vel.bounce( n )
 		rotation_from_velocity_vector( vel )
-		
-	
-	# -- Wrapping logic
-	#if global_position.x > wrapping_bounds.x:
-		#global_position.x = -wrapping_bounds.x
-	#elif global_position.x < wrapping_bounds.x:
-		#global_position.x = wrapping_bounds.x
-	#elif global_position.y > wrapping_bounds.y:
-		#global_position.y = -wrapping_bounds.y
-	#elif global_position.y < wrapping_bounds.y:
-		#global_position.y = wrapping_bounds.y
 
 
-
-func shoot(dir: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
+func shoot(_vel: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
+	#$AttackComponent.dir = dir
+	$AttackComponent.parent = self # -- this is so I can get the direction its going
+								   # -- not ideal
+	$AttackComponent.dynamic_data["shootay_value"] = _shootay_val
 	shootay_value = _shootay_val
 	$ShootayColorComponent.set_shootay_visual( shootay_value )
 	set_shootay_collision_layer()
-	assert( is_equal_approx(dir.length(), 1.0)) # -- .normalized() should be in player to save a call
-	vel = dir * SHOOTING_SPEED                  # -- but just in case
-	rotation_from_velocity_vector( dir )
+	vel = _vel                
+	rotation_from_velocity_vector( _vel )
 	stretch_squash( true )
-	GlobalSignals.emit_signal("shake_camera", {"type": "Shootay", "amount": 20, "dir": dir})
+	GlobalSignals.emit_signal("shake_camera", {"type": "Shootay", "amount": 20, "dir": _vel})
 
 
 func stretch_squash(stretch: bool) -> void:
@@ -74,9 +100,6 @@ func stretch_squash(stretch: bool) -> void:
 		Utils.shader_float_tween(tween, $Sprite2D, "_st_sq", 3.0, 1.0, 0.5, Tween.EASE_OUT, Tween.TRANS_BACK)
 	else:
 		Utils.shader_float_tween(tween, $Sprite2D, "_st_sq", 3.0, 1.0, 0.12, Tween.EASE_IN, Tween.TRANS_EXPO)
-		#tween.tween_callback( func():
-			#var _tween = create_tween()
-			#Utils.shader_float_tween(_tween, $Sprite2D, "_st_sq", 4.0, 1.0, 0.1, Tween.EASE_OUT, Tween.TRANS_EXPO))
 
 
 func rotation_from_velocity_vector(dir: Vector2):
@@ -99,30 +122,28 @@ func set_shootay_collision_layer():
 	$Area2D.set_collision_layer_value(_layer_to_turn_off, false)
 	ray.set_collision_mask_value(_layer_to_turn_on, true)
 	ray.set_collision_mask_value(_layer_to_turn_off, false)
-	
-#func resolve_raycast_collision(_collider: CollisionObject2D):
-	# var _layer = _collider.collision_layer
-	# -- if the shootay is a reflection shootay && the
-	# -- coll object is a reflection object (color  and collision match the
-	# -- shootay's, reflect, otherwise, transmit
-	#if (shootay_value == ShootayGlobals.ShootayValues.REFLECT and
-		#_layer == ShootayGlobals.reflection_layer):
 
-#func shootay_init(pos: Vector2,
-				  #wb: Vector2,
-				  #dir: Vector2,
-				  #sv: ShootayGlobals.ShootayValues) -> void:
-	## -- the shootays collision shape had to be at least far enough away from player
-	## -- to not intersect the player initially
-	#var coll_shape_offset = 1.2 * $Area2D/CollisionShape2D.shape.height / 2.0
-	#global_position = pos + dir * coll_shape_offset
-	#wrapping_bounds = wb
-	#shootay_value = sv
-	#$ShootayColorComponent.set_shootay_visual( shootay_value )
-	##shoot( dir, shootay_value)
 
-func explode(shootay_collided_with: Shootay):
-	if (shootay_collided_with.shootay_value != shootay_value):
-		if explosion_id > shootay_collided_with.explosion_id:
-			GlobalSignals.emit_signal("shootay_exploded", global_position)
-		queue_free()
+func explode(a_shootay: Shootay):
+	if _id > a_shootay._id:
+		GlobalSignals.emit_signal("shootay_exploded", global_position)
+	queue_free()
+
+
+func shootay_collided_with_shoootay_fn( other: Shootay):
+	if (other.shootay_value != shootay_value):
+		explode( other )
+	else:
+		if (other.is_transmitting_shootay() and is_transmitting_shootay()):
+			# -- teleport signal
+			if _id > other._id:
+				emit_signal( "transmission_collided", self, other)
+			queue_free()
+
+
+func is_reflecting_shootay() -> bool:
+	return shootay_value == ShootayGlobals.ShootayValues.REFLECT
+
+
+func is_transmitting_shootay() -> bool:
+	return not is_reflecting_shootay()

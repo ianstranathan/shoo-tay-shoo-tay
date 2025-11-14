@@ -18,7 +18,6 @@ Mesh vs Sprite is just accounting for arbitrarily making one or the other / forg
 func _ready() -> void:
 	assert(mechanics_color_data and (sprite or mesh))
 
-
 # -- so, this => all shaders that are shootay applicable (material is on something
 #                that can interact with a shootay) must have src_col as a uniform
 func set_shootay_visual(shootay_value: ShootayGlobals.ShootayValues):
