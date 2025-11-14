@@ -129,7 +129,7 @@ func boost(a_shootay_vel: Vector2):
 	current_speed = BOOSTING_SPEED * r
 	current_accl = BOOSTING_ACCL * r
 	
-	assert( r >= 0.0 and r <= 1.0)
+#	assert( r >= 0.0 and r <= 1.0)
 	if r > 0.66:
 		emit_signal("boosted", global_position) # -- the time to blur
 

@@ -70,4 +70,4 @@ pivot_offset = Vector2(-5428, 278)
 [node name="InputManager" parent="." instance=ExtResource("12_dg77c")]
 
 [node name="Mob" parent="." instance=ExtResource("13_ycdy4")]
-position = Vector2(-339, -163)
+position = Vector2(-542, -311)
