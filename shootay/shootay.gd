@@ -11,7 +11,7 @@ var dist: float = 0.0
 @onready var ray = $RayCast2D
 
 signal shootay_collided( pos: Vector2, normal: Vector2)
-signal transmission_collided( midpoint: Vector2)
+signal transmission_collided( shootay_A: Shootay, shootay_B: Shootay)
 
 
 # -- NOTE shootay manager
@@ -71,6 +71,7 @@ func reflect():
 		vel = vel.bounce( n )
 		rotation_from_velocity_vector( vel )
 
+
 func shoot(_vel: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	#$AttackComponent.dir = dir
 	$AttackComponent.parent = self # -- this is so I can get the direction its going
@@ -125,11 +126,12 @@ func shootay_collided_with_shoootay_fn( other: Shootay):
 	if (other.shootay_value != shootay_value):
 		explode( other )
 	else:
-		if other.is_transmitting_shootay() and is_transmitting_shootay():
+		if (other.is_transmitting_shootay() and is_transmitting_shootay()):
 			# -- teleport signal
 			if _id > other._id:
-				emit_signal( "transmission_collided", (global_position + other.global_position) / 2.0 )
+				emit_signal( "transmission_collided", self, other)
 			queue_free()
+
 
 func is_reflecting_shootay() -> bool:
 	return shootay_value == ShootayGlobals.ShootayValues.REFLECT

@@ -46,7 +46,7 @@ func just_released_action(action_name: String) -> bool:
 	return Input.is_action_just_released(action_name)
 
 
-var last_pressed_action
+var last_pressed_action: StringName
 func pressed_action(action_name: String) -> bool: #, return_name=false):
 	var rez = Input.is_action_pressed(action_name)
 	if rez:
@@ -56,7 +56,7 @@ func pressed_action(action_name: String) -> bool: #, return_name=false):
 
 func get_last_pressed_action() -> StringName:
 	return last_pressed_action
-
+	
 func set_input_source(_source_type: InputSourceType):
 	if current_input_source != _source_type:
 		current_input_source = _source_type

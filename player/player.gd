@@ -45,22 +45,22 @@ var can_shoot: bool # -- to prevent spamming
 
 func _ready() -> void:
 	assert(input_manager)
+	
+	# -------------------------------------------------- charging manager
 	$ChargeManager.input_manager = input_manager
 	$ChargeManager.charge_released.connect( func(val: ShootayGlobals.ShootayValues,
 												 fn: Callable):
 		shoot_a_shootay( val )
 		fn.call())
 	$ChargeManager.finished_charging.connect( func(): pass)
-	# --------------------------------------------------
+	
+	# -------------------------------------------------- aiming manager
 	$AimingManager.aim_rotated.connect( func( r: float):
 		global_rotation = r)
-	# --------------------------------------------------
-	
-	# --------------------------------------------------
 	aiming_manager.input_manager = input_manager
 	aiming_manager.my_init()
-	# --------------------------------------------------
 	
+	# --------------------------------------------------
 	$ReloadTimer.timeout.connect( func(): can_shoot = true)
 	
 	boost_timer.timeout.connect( func():
@@ -156,32 +156,8 @@ func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 					global_position,
 					$AimingManager.get_aim_dir() * shootay_speed,
 					shootay_value)
-		
+
 
 func teleport(pos: Vector2):
 	$TeleportContainer.teleport()
 	global_position = pos
-
-
-#var is_charging: bool = false
-#func charge_shootay():
-	#var is_any_shoot_action_held = input_manager.pressed_action("shoot reflect") or \
-								   #input_manager.pressed_action("shoot transmit")
-	#if is_any_shoot_action_held and !is_charging:
-		#is_charging = true
-		## -- timer to make visual or sound proportional to
-		#$ShootayChargeTimer.start()
-		## -- start charge particles
-		#$ShootayCharge.start_charging(shootay_val_from_action_name( 
-			#input_manager.get_last_pressed_action()))
-#
-	#elif !is_any_shoot_action_held and is_charging:
-		#is_charging = false
-		#shoot_a_shootay(  shootay_val_from_action_name( input_manager.get_last_pressed_action()))
-#
-#
-#func shootay_val_from_action_name( val: StringName) -> ShootayGlobals.ShootayValues:
-	#if val == "shoot reflect":
-		#return ShootayGlobals.ShootayValues.REFLECT
-	#else:
-		#return ShootayGlobals.ShootayValues.TRANSMIT

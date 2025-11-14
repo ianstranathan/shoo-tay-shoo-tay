@@ -1,8 +1,5 @@
 extends GPUParticles2D
 
-#@export var MAX_CHARGE_PARTICLES: int = 50
-#@export var MIN_CHARGE_PARTICLES: int = 10
-
 func _ready() -> void:
 	finished.connect( func():
 		visible = false)

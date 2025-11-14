@@ -9,11 +9,14 @@ var shootay_count: int = 0
 var player_ref: Player
 var cam_ref: Camera2D
 
-# -- TODO
-# -- change the explosion id to be just an id, it's doing double duty with
-# -- the transmission mechanic now
 
 @export var transmit_wrapping_buffer := 10.0
+
+
+var last_transmission_shootay_fired: Shootay
+func is_last_transmission_shootay_fired(shootay_1: Shootay, shootay_2: Shootay) -> bool:
+	return shootay_1 == last_transmission_shootay_fired or shootay_2 == last_transmission_shootay_fired
+
 
 func make_shootay(pos: Vector2, vel: Vector2, shootay_value:ShootayGlobals.ShootayValues):
 	var shootay = shootay_scene.instantiate()
@@ -32,10 +35,14 @@ func make_shootay(pos: Vector2, vel: Vector2, shootay_value:ShootayGlobals.Shoot
 	# -- relay signal up
 	shootay.shootay_collided.connect( func(pos, normal): 
 		emit_signal("shootay_collided", pos, normal))
-	shootay.transmission_collided.connect( func( midpoint: Vector2):
-		emit_signal("transmission_collided", midpoint)
-	)
+	shootay.transmission_collided.connect( func( A: Shootay, B: Shootay):
+		if is_last_transmission_shootay_fired ( A, B ):
+			var midpoint = (A.global_position + B.global_position) / 2.0 
+			emit_signal("transmission_collided", midpoint))
 	
 	add_child(shootay)
 	
 	shootay.shoot( vel, shootay_value)
+	
+	if shootay_value == ShootayGlobals.ShootayValues.TRANSMIT:
+		last_transmission_shootay_fired = shootay
