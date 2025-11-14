@@ -12,7 +12,7 @@ var dist: float = 0.0
 
 signal shootay_collided( pos: Vector2, normal: Vector2)
 signal transmission_collided( shootay_A: Shootay, shootay_B: Shootay)
-
+signal transmission_shot_wrapped( shootay: Shootay)
 
 # -- NOTE shootay manager
 var _id: int
@@ -51,14 +51,22 @@ func wrap_viewport():
 	var x = player_ref.global_position.x
 	var y = player_ref.global_position.y
 	
+	var no_longer_active_for_teleport: bool = false
 	if global_position.x > x + wrapping_bounds.x:
 		global_position.x = x - wrapping_bounds.x
+		no_longer_active_for_teleport = true
 	elif global_position.x < x - wrapping_bounds.x:
 		global_position.x = x + wrapping_bounds.x
+		no_longer_active_for_teleport = true
 	elif global_position.y > y + wrapping_bounds.y:
 		global_position.y = y - wrapping_bounds.y
+		no_longer_active_for_teleport = true
 	elif global_position.y < y - wrapping_bounds.y:
 		global_position.y = y + wrapping_bounds.y
+		no_longer_active_for_teleport = true
+	
+	if no_longer_active_for_teleport and shootay_value == ShootayGlobals.ShootayValues.TRANSMIT:
+		emit_signal("transmission_shot_wrapped", self)
 
 
 func reflect():

@@ -34,7 +34,7 @@ var move_dir: Vector2 = Vector2.ZERO
 
 @export_category("Shooting")
 @export var MAX_SHOOT_SPEED: float = 800 # -- really this should account for min speed (e.g 750)
-@export var MIN_SHOOT_SPEED: float = 50
+@export var MIN_SHOOT_SPEED: float = 200
 # -- this is used to offset aiming reticle
 
 @export_category("Misc")
@@ -72,7 +72,8 @@ func _ready() -> void:
 		if attack.dynamic_data.has("shootay_value"):
 			var _val = attack.dynamic_data.get("shootay_value")
 			if _val == ShootayGlobals.ShootayValues.REFLECT:
-				boost(attack.parent.vel)
+				var _shootay = attack.parent
+				boost(_shootay.vel)
 		$HealthComponent.take_damge( attack.damage ))
 
 	# --------------------------------------------------
@@ -93,6 +94,8 @@ func _physics_process(delta: float) -> void:
 	if !$HitTimer.is_stopped():
 		$PlayerSprite.material.set_shader_parameter("hit_time", Utils.normalized_timer($HitTimer))
 	# ------------------------ Move
+	
+	# -- lock the direction of boost
 	if !boost_timer.is_stopped():
 		velocity = velocity.move_toward( boost_dir * current_speed,
 										 current_accl * delta)
@@ -112,19 +115,23 @@ var boost_dir:= Vector2.ZERO
 # I wish I could make a simple closure around these guys, but whatever
 var pre_boost_speed: float
 var pre_boost_accl: float
-func boost(_dir: Vector2):
+func boost(a_shootay_vel: Vector2):
 	# if the closure speed, accl isn't the boost ones
 	pre_boost_speed = current_speed
 	pre_boost_accl = current_accl
 	Utils.hit_stop(0.05, 0.3)
-	emit_signal("boosted", global_position) # -- the time to blur
+	
 	# $BoostContainer.set_trail_active(true)
-	# _dir comes from the reflecting bullets vector
-	boost_dir = _dir.normalized()
+	boost_dir = a_shootay_vel.normalized()
 	boost_timer.start()
 	# -- change the accl_curve
-	current_speed = BOOSTING_SPEED
-	current_accl = BOOSTING_ACCL
+	var r = (a_shootay_vel.length() / MAX_SHOOT_SPEED)
+	current_speed = BOOSTING_SPEED * r
+	current_accl = BOOSTING_ACCL * r
+	
+	assert( r >= 0.0 and r <= 1.0)
+	if r > 0.66:
+		emit_signal("boosted", global_position) # -- the time to blur
 
 
 # -- TODO
