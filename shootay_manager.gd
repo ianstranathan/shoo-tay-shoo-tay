@@ -38,9 +38,11 @@ func make_shootay(pos: Vector2, vel: Vector2, shootay_value:ShootayGlobals.Shoot
 	shootay.transmission_collided.connect( func( A: Shootay, B: Shootay):
 		if is_last_transmission_shootay_fired ( A, B ):
 			var midpoint = (A.global_position + B.global_position) / 2.0 
+			print("transmission_collided")
 			emit_signal("transmission_collided", midpoint))
 	shootay.transmission_shot_wrapped.connect( func(a_shootay: Shootay):
-		last_transmission_shootay_fired = null)
+		if a_shootay == last_transmission_shootay_fired:
+			last_transmission_shootay_fired = null)
 	add_child(shootay)
 	
 	shootay.shoot( vel, shootay_value)

@@ -10,7 +10,7 @@ void fragment() {
 	float d = length(uv);
 	vec2 polar =  vec2(d, atan(uv.y, uv.x));
 	vec4 n_sample = texture(noise_tex, 0.3 * polar - 0.4 * TIME);
-	
+
 	float _step_threshold = mix(0.8, 0.3, t );
 	float disp = step(_step_threshold, n_sample.x);
 	float mask = 1. - smoothstep(0.9, 0.93, d + 0.7 * n_sample.x);
