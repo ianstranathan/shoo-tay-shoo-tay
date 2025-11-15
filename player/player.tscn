@@ -67,10 +67,11 @@ texture = ExtResource("1_rkbax")
 script = ExtResource("16_tqiix")
 
 [node name="ShootayChargeTimer" type="Timer" parent="ChargeManager"]
-wait_time = 3.0
+wait_time = 1.5
 one_shot = true
 
 [node name="FullChargeVisual" type="Sprite2D" parent="ChargeManager"]
+visible = false
 z_index = -5
 material = SubResource("ShaderMaterial_tqiix")
 scale = Vector2(1.5, 1.5)

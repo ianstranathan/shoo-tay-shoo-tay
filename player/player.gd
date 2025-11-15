@@ -112,42 +112,23 @@ func _physics_process(delta: float) -> void:
 
 
 var boost_dir:= Vector2.ZERO
-# I wish I could make a simple closure around these guys, but whatever
-var pre_boost_speed: float
-var pre_boost_accl: float
+
 func boost(a_shootay_vel: Vector2):
-	# if the closure speed, accl isn't the boost ones
-	pre_boost_speed = current_speed
-	pre_boost_accl = current_accl
 	Utils.hit_stop(0.05, 0.3)
-	
-	# $BoostContainer.set_trail_active(true)
 	boost_dir = a_shootay_vel.normalized()
 	boost_timer.start()
-	# -- change the accl_curve
 	var r = (a_shootay_vel.length() / MAX_SHOOT_SPEED)
 	current_speed = BOOSTING_SPEED * r
 	current_accl = BOOSTING_ACCL * r
-	
-	assert( r >= 0.0 and r <= 1.0)
-	if r > 0.66:
-		emit_signal("boosted", global_position) # -- the time to blur
+
+	if r > 0.8:
+		emit_signal("boosted", global_position)
 
 
 # -- TODO
-# -- put this edge case into the boost function and make tidier
 func boost_end_callback():
-	# -- there's an edge case where you can get hit before this is reinitialized
-	# -- so the last movement vars (pre_boost vars) were actually the boosted ones
-	if (pre_boost_accl == BOOSTING_ACCL or
-		pre_boost_speed == BOOSTING_SPEED):
-		current_speed = SPEED
-		current_accl = ACCL
-	else:
-		current_speed = pre_boost_speed
-		current_accl = pre_boost_accl
-	
-	#$BoostContainer.set_trail_active(false)
+	current_speed = SPEED
+	current_accl = ACCL
 
 
 func look_ahead_position() -> Vector2:

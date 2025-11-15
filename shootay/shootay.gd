@@ -23,6 +23,7 @@ var wrapping_bounds: Vector2
 var wrapping_buffer: float
 
 func _ready() -> void:
+	ray.enabled = false
 	#assert(shootay_value)
 	#if shootay_value == ShootayGlobals.ShootayValues.TRANSMIT:
 	assert(cam_ref and player_ref)
@@ -31,8 +32,10 @@ func _ready() -> void:
 	wrapping_bounds += Vector2(wrapping_buffer, wrapping_buffer)
 	# -- there is a unique id given by manager to resolve who explodes
 	# -- to prevent multiple explosions
-	$Area2D.shootay_collided_with_shoootay.connect( shootay_collided_with_shoootay_fn )
+	$Area2D.collided_with_shoootay.connect( shootay_collided_with_shoootay_fn )
 	
+	$Area2D.collided_with_body.connect( func():
+		ray.enabled = true)
 
 func _physics_process(delta: float) -> void:
 	var delta_pos = vel * delta
@@ -78,7 +81,7 @@ func reflect():
 		stretch_squash( false )
 		vel = vel.bounce( n )
 		rotation_from_velocity_vector( vel )
-
+		ray.enabled = false
 
 func shoot(_vel: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	#$AttackComponent.dir = dir
@@ -136,10 +139,14 @@ func shootay_collided_with_shoootay_fn( other: Shootay):
 	else:
 		if (other.is_transmitting_shootay() and is_transmitting_shootay()):
 			# -- teleport signal
+			var this_id = _id
+			var other_id = other._id
 			if _id > other._id:
 				emit_signal( "transmission_collided", self, other)
 			queue_free()
-
+		if is_reflecting_shootay():
+			ray.enabled = true
+			
 
 func is_reflecting_shootay() -> bool:
 	return shootay_value == ShootayGlobals.ShootayValues.REFLECT
