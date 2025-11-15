@@ -53,6 +53,7 @@ func _ready() -> void:
 	$HealthComponent.health_depeleted.connect( func(): queue_free())
 	
 	$DetectionArea.player_lost_found.connect(player_lost_found)
+	$DetectionArea.target_ID.connect( func(b: Player): target = b)
 
 	# -----------------------------
 	# -- navigation agent stuff

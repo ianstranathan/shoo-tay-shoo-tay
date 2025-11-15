@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bx2y6e3jcdklu" path="res://enemies/mob.gd" id="1_b8st1"]
 [ext_resource type="Shader" uid="uid://jhthuqdlbvkn" path="res://enemies/base_flashing.gdshader" id="2_m3fjm"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="3_qftf6"]
-[ext_resource type="Script" uid="uid://bsylm61xpi4k7" path="res://components/hitbox_component.gd" id="4_gceo1"]
+[ext_resource type="Script" path="res://components/hitbox_component.gd" id="4_gceo1"]
 [ext_resource type="Texture2D" uid="uid://bcjkpcuwbml0h" path="res://assets/pointer.png" id="4_jdoar"]
 [ext_resource type="Script" uid="uid://dtveseykhco0l" path="res://components/health_component.gd" id="5_tcap5"]
 [ext_resource type="Script" uid="uid://dhngu7q4anwfi" path="res://components/detection_area.gd" id="6_6p1dh"]
