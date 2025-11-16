@@ -15,7 +15,7 @@ func _ready() -> void:
 		emit_signal("finished_charging"))
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if !$ShootayChargeTimer.is_stopped():
 		var _ratio = 1. - ($ShootayChargeTimer.time_left / $ShootayChargeTimer.wait_time)
 		charge_shot_speed_ratio = _ratio

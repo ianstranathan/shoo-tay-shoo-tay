@@ -2,7 +2,6 @@ shader_type canvas_item;
 
 uniform float dmg_scale: hint_range(0.0, 1.0, 0.25);
 uniform float t: hint_range(0.0, 1.0, 0.05);
-uniform float boost_time: hint_range(0.0, 1.0, 0.05);
 uniform float hit_time:hint_range(0.0, 4.0, 0.05) = 4.0;
 
 
@@ -31,9 +30,7 @@ const float tri_height = 0.5;
 uniform vec4 src_col: source_color = vec4(1.0, 0.6, 0., 1.);
 uniform sampler2D cracked_tex: repeat_enable;
 
-
-
-const vec3 charging_col_src = vec3(1.0, 0.5, 0.25);
+//const vec4 charging_col_src = vec4(1.0, 0.5, 0.25, 0.0);
 
 mat2 rot(float angle){
 	return mat2( vec2(cos(angle), -sin(angle)), vec2(sin(angle), cos(angle)));
@@ -54,7 +51,7 @@ void fragment() {
 	float charging_alpha = pow((1. - _sdf), 3.0);
 	dist *= 0.1;
 	dist = pow(dist, 0.8);
-	vec3 charging_col = dist * vec3(1.0, 0.5, 0.25);
+	vec3 charging_col = dist * src_col.xyz;
 
 	charging_col = 1.0 - exp( -charging_col );
 
@@ -69,7 +66,7 @@ void fragment() {
 	float cracked_glow_dist = 1. / ((1. - cracked_src.x) + (0.8 * (0.5 * (sin(mix(4., 12., dmg_scale * dmg_scale) * 10. * t) + 1.0))));
 	cracked_glow_dist *= 0.1;
 	cracked_glow_dist = pow(cracked_glow_dist, 0.8);
-	vec3 cracked_col = cracked_glow_dist * charging_col_src;
+	vec3 cracked_col = cracked_glow_dist * src_col.xyz;
 	cracked_col = 1.0 - exp( -cracked_col );
 
 	//
