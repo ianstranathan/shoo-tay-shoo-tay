@@ -3,7 +3,7 @@ extends CanvasLayer
 @export var cam: Camera2D
 var effects_fn_dict :Dictionary = {}
 var do_effects: bool = false
-func shockwave(position: Vector2):
+func shockwave(_position: Vector2):
 	var duration = 1.0
 	$ColorRect.visible = true
 	var timer = get_tree().create_timer(duration)

@@ -48,7 +48,7 @@ func _physics_process(delta: float) -> void:
 		emit_signal("aim_rotated", lerp_angle(global_rotation, angle, rotation_speed * delta))
 		#global_rotation = lerp_angle(global_rotation,angle,rotation_speed * delta)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	aim_anim()
 
 

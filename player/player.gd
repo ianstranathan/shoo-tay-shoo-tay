@@ -14,7 +14,6 @@ Current Movement variables are stateful
 @export var input_manager: InputManager
 
 @export_category("Movement")
-var move_dir: Vector2 = Vector2.ZERO
 @export var SPEED: float = 300.0
 @export var DECL = 3000.0 # -- should this be proportinoal to speed?
 @export var BOOSTING_SPEED: float = 1200
@@ -46,6 +45,9 @@ var can_shoot: bool # -- to prevent spamming
 func _ready() -> void:
 	assert(input_manager)
 	
+	# -------------------------------------------------- overload manager
+	$OverloadManager.overloaded.connect( func(): pass)
+
 	# -------------------------------------------------- charging manager
 	$ChargeManager.input_manager = input_manager
 	$ChargeManager.charge_released.connect( func(val: ShootayGlobals.ShootayValues,
@@ -60,11 +62,12 @@ func _ready() -> void:
 	aiming_manager.input_manager = input_manager
 	aiming_manager.my_init()
 	
-	# --------------------------------------------------
+	# -------------------------------------------------- No spam firing
 	$ReloadTimer.timeout.connect( func(): can_shoot = true)
 	
 	boost_timer.timeout.connect( func():
-		boost_end_callback.call())
+		current_speed = SPEED
+		current_accl = ACCL)
 	# -------------------------------------------------- 
 	$HitboxComponent.was_hit.connect( func( attack ):
 		$HitTimer.start()
@@ -85,11 +88,8 @@ func _ready() -> void:
 		Utils.hit_stop(0.05, 0.3))
 
 
-func _process(delta: float) -> void:
-	move_dir = input_manager.movement_vector()
-
-
 func _physics_process(delta: float) -> void:
+	var move_dir = input_manager.movement_vector()
 	# -- Hittimer visual
 	if !$HitTimer.is_stopped():
 		$PlayerSprite.material.set_shader_parameter("hit_time", Utils.normalized_timer($HitTimer))
@@ -115,21 +115,15 @@ var boost_dir:= Vector2.ZERO
 
 func boost(a_shootay_vel: Vector2):
 	Utils.hit_stop(0.05, 0.3)
+	$OverloadManager.fune_fune_switch()
 	boost_dir = a_shootay_vel.normalized()
 	boost_timer.start()
 	var r = (a_shootay_vel.length() / MAX_SHOOT_SPEED)
 	current_speed = BOOSTING_SPEED * r
 	current_accl = BOOSTING_ACCL * r
 	
-#	assert( r >= 0.0 and r <= 1.0)
-	if r > 0.66:
+	if r > 0.80:
 		emit_signal("boosted", global_position) # -- the time to blur
-
-
-# -- TODO
-func boost_end_callback():
-	current_speed = SPEED
-	current_accl = ACCL
 
 
 func look_ahead_position() -> Vector2:
@@ -141,6 +135,7 @@ func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 		var shootay_speed = MAX_SHOOT_SPEED * $ChargeManager.get_charge_ratio() + \
 							MIN_SHOOT_SPEED
 		can_shoot = false
+		$OverloadManager.fune_fune_check( shootay_value )
 		emit_signal("shot_a_shootay",
 					global_position,
 					$AimingManager.get_aim_dir() * shootay_speed,
@@ -148,5 +143,6 @@ func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 
 
 func teleport(pos: Vector2):
+	$OverloadManager.fune_fune_switch()
 	$TeleportContainer.teleport()
 	global_position = pos

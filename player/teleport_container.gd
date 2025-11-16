@@ -3,7 +3,7 @@ extends Node2D
 signal teleport_anim_finished()
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	global_rotation = 0.0
 
 func teleport():
