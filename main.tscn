@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=14 format=3 uid="uid://cnjs673hgk6wm"]
 
 [ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bgodmmno8hffy" path="res://main.gd" id="1_lquwl"]
@@ -12,7 +12,6 @@
 [ext_resource type="Shader" uid="uid://c665h87g6h08y" path="res://post_processing/shockwave.gdshader" id="10_4c57u"]
 [ext_resource type="Script" uid="uid://bnfbldgjulexf" path="res://post_processing_layer.gd" id="10_efxa6"]
 [ext_resource type="PackedScene" uid="uid://dwcba7qkw7dhb" path="res://input_manager/input_manager.tscn" id="12_dg77c"]
-[ext_resource type="PackedScene" uid="uid://brbsqoshfpptq" path="res://enemies/mob.tscn" id="13_ycdy4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efxa6"]
 shader = ExtResource("10_4c57u")
@@ -68,6 +67,3 @@ grow_vertical = 2
 pivot_offset = Vector2(-5428, 278)
 
 [node name="InputManager" parent="." instance=ExtResource("12_dg77c")]
-
-[node name="Mob" parent="." instance=ExtResource("13_ycdy4")]
-position = Vector2(-542, -311)

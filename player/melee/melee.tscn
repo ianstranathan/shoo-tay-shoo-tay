@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://c0ndok2t2r1ij"]
+
+[ext_resource type="Script" uid="uid://ddgavojyt542r" path="res://player/melee/melee.gd" id="1_0b0x1"]
+[ext_resource type="Shader" uid="uid://bnvdgvgchaewf" path="res://player/melee/melee.gdshader" id="1_6vyve"]
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_bg8qh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0b0x1"]
+shader = ExtResource("1_6vyve")
+shader_parameter/rad = 0.0
+
+[node name="Melee" type="Node2D" node_paths=PackedStringArray("delay_after_anim_timer")]
+script = ExtResource("1_0b0x1")
+delay_after_anim_timer = NodePath("Timer")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_0b0x1")
+position = Vector2(430, 264)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("1_bg8qh")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.4
+one_shot = true

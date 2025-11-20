@@ -65,5 +65,6 @@ func my_init():
 			$ControllerAimingSprite.visible = false
 			$MouseAimingSprite.visible = true)
 
+
 func get_aim_dir():
 	return last_non_zero_dir.normalized()#dir.normalized() if !dir.is_zero_approx() else last_non_zero_dir

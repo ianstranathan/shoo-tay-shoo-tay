@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://c2eah12q8mrq"]
+[gd_scene load_steps=25 format=3 uid="uid://c2eah12q8mrq"]
 
 [ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
@@ -17,6 +17,7 @@
 [ext_resource type="Shader" uid="uid://cvmj0eyhtnn0j" path="res://player/fully_charged_visual.gdshader" id="16_32hag"]
 [ext_resource type="Script" uid="uid://da5u341rusojd" path="res://player/charge_manager.gd" id="16_tqiix"]
 [ext_resource type="Script" uid="uid://dc400mxlxgxgu" path="res://player/overload_manager.gd" id="17_tqiix"]
+[ext_resource type="PackedScene" uid="uid://c0ndok2t2r1ij" path="res://player/melee/melee.tscn" id="18_e7oew"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
@@ -144,3 +145,5 @@ texture = ExtResource("1_rkbax")
 [node name="OverloadManager" type="Node" parent="." node_paths=PackedStringArray("player_sprite")]
 script = ExtResource("17_tqiix")
 player_sprite = NodePath("../PlayerSprite")
+
+[node name="Melee" parent="." instance=ExtResource("18_e7oew")]
