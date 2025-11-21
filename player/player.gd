@@ -6,6 +6,7 @@ class_name Player
 signal died
 signal boosted( pos: Vector2)
 signal shot_a_shootay( pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.ShootayValues)
+signal overload_cleared()
 """
 Current Movement variables are stateful
 (can be changed by environmentals, shots etc)
@@ -115,7 +116,7 @@ var boost_dir:= Vector2.ZERO
 
 func boost(a_shootay_vel: Vector2):
 	Utils.hit_stop(0.05, 0.3)
-	$OverloadManager.fune_fune_switch()
+	$OverloadManager.clear_overload()
 	boost_dir = a_shootay_vel.normalized()
 	boost_timer.start()
 	var r = (a_shootay_vel.length() / MAX_SHOOT_SPEED)
@@ -143,6 +144,7 @@ func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 
 
 func teleport(pos: Vector2):
-	$OverloadManager.fune_fune_switch()
+	$OverloadManager.clear_overload()
+	emit_signal("overload_cleared")
 	$TeleportContainer.teleport()
 	global_position = pos

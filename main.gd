@@ -15,7 +15,10 @@ func _ready() -> void:
 	the_shootay_manager.cam_ref = cam_ref
 	the_shootay_manager.player_ref = the_player
 	
-	the_player.shot_a_shootay.connect( the_shootay_manager.make_shootay)
+	the_player.shot_a_shootay.connect( 
+		func( pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.ShootayValues):
+			the_shootay_manager.make_shootay.call(pos,  dir, shootay_value)
+			$UI.shoot(shootay_value))
 	the_player.died.connect( game_over )
 
 	$EnemyManager.player_ref = the_player
@@ -25,6 +28,8 @@ func _ready() -> void:
 		
 		# -- blur
 		$PostProcessing.shockwave(pos))
+	the_player.overload_cleared.connect( func(): $UI.clear_shootay_meter() )
+	#$UI
 
 func game_over():
 	# -- slow the tick rate way down for a minute, zoom in on how terrible

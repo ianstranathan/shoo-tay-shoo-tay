@@ -20,7 +20,7 @@ func do_melee():
 	
 	tween.tween_property( $Sprite2D, "material:shader_parameter/rad", 0.75, 0.3
 	).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
-	
+
 	tween.tween_callback( func():
 		$Sprite2D.visible = false
 		$Sprite2D.material.set_shader_parameter("rad", 0.0)
