@@ -33,13 +33,12 @@ func increase_overload():
 
 func decrease_overload():
 	increment_overload( -1 )
-	print( stack )
 	if stack == 0:
 		clear_overload()
 
 
 func increment_overload(inc: int):
-	if stack < num_shots_of_one_type_allowed and stack > -num_shots_of_one_type_allowed:
+	if stack <= num_shots_of_one_type_allowed and stack >= -num_shots_of_one_type_allowed:
 		stack += inc
 		var _t = float(abs(stack)) / float(num_shots_of_one_type_allowed - 1)
 		player_sprite.material.set_shader_parameter("t", _t)

@@ -13,9 +13,9 @@ script = ExtResource("1_0b0x1")
 delay_after_anim_timer = NodePath("Timer")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -10
 material = SubResource("ShaderMaterial_0b0x1")
-position = Vector2(430, 264)
-scale = Vector2(1.5, 1.5)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("1_bg8qh")
 
 [node name="Timer" type="Timer" parent="."]

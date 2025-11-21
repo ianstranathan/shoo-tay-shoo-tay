@@ -120,7 +120,7 @@ script = ExtResource("10_ebec5")
 
 [node name="TeleportVisual" type="Sprite2D" parent="TeleportContainer"]
 material = SubResource("ShaderMaterial_2ieo8")
-scale = Vector2(1.5, 1.5)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("1_rkbax")
 
 [node name="HitTimer" type="Timer" parent="."]

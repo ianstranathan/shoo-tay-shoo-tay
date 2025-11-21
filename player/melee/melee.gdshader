@@ -22,7 +22,7 @@ void fragment() {
 	mask = abs(mask) - 0.2;
 	mask = 1. - smoothstep(0., 0.05, mask);
 	vec3 col = vec3(mask);
-	COLOR = vec4(col, mask);
+	COLOR = vec4(col, 0.5 * mask);
 }
 
 //void light() {

@@ -86,7 +86,7 @@ func _ready() -> void:
 	$HealthComponent.health_depeleted.connect( func(): emit_signal("died"))
 
 	$TeleportContainer.teleport_anim_finished.connect( func():
-		Utils.hit_stop(0.05, 0.3))
+		Utils.hit_stop(0.05, 0.2))
 
 
 func _physics_process(delta: float) -> void:
@@ -115,6 +115,8 @@ func _physics_process(delta: float) -> void:
 var boost_dir:= Vector2.ZERO
 
 func boost(a_shootay_vel: Vector2):
+	$Melee.do_melee()
+	emit_signal("overload_cleared")
 	Utils.hit_stop(0.05, 0.3)
 	$OverloadManager.clear_overload()
 	boost_dir = a_shootay_vel.normalized()
@@ -146,5 +148,6 @@ func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 func teleport(pos: Vector2):
 	$OverloadManager.clear_overload()
 	emit_signal("overload_cleared")
+	$Melee.do_melee()
 	$TeleportContainer.teleport()
 	global_position = pos
