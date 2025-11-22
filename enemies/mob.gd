@@ -26,12 +26,15 @@ All relevant data is exposed in editor:
 @export var detection_radius: float = 24
 @export var stop_distance: float = 45
 var attack_comp: PackedScene = preload("res://enemies/melee_attack_cone.tscn")
-var chase_player: bool = false
+
 var can_hit: bool
-var can_move: bool #using to pause movement - add a reaction time
-var is_attacking: bool  #using this to add some delay to melee attack and pause movement.
+
+enum EnemyState {IDLE, CHASING, ATTACKING, WAITING, PATROLLING, SEARCHING}
+var state: EnemyState = EnemyState.IDLE
 
 var target: CharacterBody2D
+
+signal died
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 
 func _ready() -> void:
@@ -44,13 +47,15 @@ func _ready() -> void:
 	#-----------------------------Timers
 	$MeleeCooldownTimer.timeout.connect( func(): can_hit = true)
 	$AttackPauseTimer.timeout.connect(execute_attack)
-	$MoveDelayTimer.timeout.connect( func(): can_move = true)
+	$MoveDelayTimer.timeout.connect( func(): state = EnemyState.CHASING)
 	
 	# ----------------------------- Signals
 	$HitboxComponent.was_hit.connect( take_hit )
 	$HealthComponent.health_changed.connect( func( ratio: float):
 		$Sprite2D.material.set_shader_parameter("health", ratio))
-	$HealthComponent.health_depeleted.connect( func(): queue_free())
+	$HealthComponent.health_depeleted.connect(  func(): 
+		emit_signal("died")
+		queue_free())
 	
 	$DetectionArea.player_lost_found.connect(player_lost_found)
 	$DetectionArea.target_ID.connect( func(b: Player): target = b)
@@ -71,7 +76,7 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	
-	if target and chase_player and !is_attacking:
+	if target and state == EnemyState.CHASING:
 		move_to_target(delta)
 
 
@@ -99,7 +104,10 @@ func modulate_color():
 
 #------------------------------------------------------------
 #Behavior Functions
-
+#check if enemy is in any of the following states. If so enemy is busy
+func is_busy() -> bool:
+	return state in [EnemyState.ATTACKING, EnemyState.WAITING]#waiting might be redundant
+	
 func set_det_radius( r: float) -> void:
 	$DetectionArea/CollisionShape2D3.shape.radius = r
 
@@ -111,11 +119,10 @@ this might end up being a heavy handed way to handle this but works for now"
 func player_lost_found(lost_found)-> void:
 	match lost_found:
 		"Lost":
-			chase_player = false
-			can_move = false
+			state = EnemyState.SEARCHING
 			$MoveDelayTimer.stop()
 		"Found":
-			chase_player = true
+			state = EnemyState.WAITING
 			$MoveDelayTimer.start()
 
 "TODO: 
@@ -127,7 +134,7 @@ func player_lost_found(lost_found)-> void:
 * accel and decel so enemy doesnt feel so weightless
 "
 func move_to_target(delta: float) -> void:
-	if can_move:
+	if state == EnemyState.CHASING:
 		set_movement_target( target.global_position )
 		if navigation_agent.is_navigation_finished():
 			start_attack() #should set up function to check distance instead of calling here
@@ -148,51 +155,21 @@ func move_to_target(delta: float) -> void:
 		move_and_slide()
 
 func start_attack():
-	if can_hit and !is_attacking:
-		can_hit = false
-		can_move = false
-		is_attacking = true
-		$AttackPauseTimer.start()
+	if !can_hit or is_busy():
+		return
 		
+	can_hit = false
+	state = EnemyState.ATTACKING
+	$AttackPauseTimer.start()
+	
+		
+#Called by AttackPauseTimer
 func execute_attack():
 	var meleeScene = attack_comp.instantiate()
 	add_child(meleeScene)
 	meleeScene.global_position = $AttackSpawnPoint.global_position
-	is_attacking = false
+	
+	
+	state = EnemyState.WAITING
 	$MoveDelayTimer.start()
 	$MeleeCooldownTimer.start()
-# --------------------------------------------------------------
-# -- This was a polygon2d approach, but it should look better with an sdf + shader
-
-#@export_category("collision and polygon")
-#@export var num_pts: int = 50
-#@export var radius: float = 20.0:
-	#set = set_radius
-#
-#
-## Reference to the node you want to flash (e.g., your visual sprite)
-#@onready var visual_node: Node2D = $Polygon2D
-#var original_modulate_color: Color 
-#
-#func _ready():
-	## Store the original color when the game starts
-	#original_modulate_color = visual_node.modulate
-#
-#
-#func _process(delta: float) -> void:
-	#if Engine.is_editor_hint() and !$Polygon2D.polygon:
-		#$Polygon2D.polygon = make_circle_pts($CollisionShape2D.shape.radius, num_pts)
-		##set_radius( $CollisionShape2D.shape.radius )
-#
-#func set_radius(r: float):
-	#$Polygon2D.polygon = make_circle_pts(r, num_pts)
-#
-#
-#func make_circle_pts(r: float, n: int):
-	#var v: PackedVector2Array = []
-	#var theta = 0
-	#var delta_theta = TAU / float(n)
-	#for i in range(n):
-		#v.append( r * Vector2(cos(theta), sin(theta)))
-		#theta += delta_theta
-	#return v

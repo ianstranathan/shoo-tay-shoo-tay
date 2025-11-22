@@ -26,6 +26,7 @@ GlobalSignals="*res://singletons/global_signals.gd"
 Reflect=""
 Transmit=""
 Player=""
+Enemy=""
 
 [input]
 

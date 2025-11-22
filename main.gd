@@ -18,7 +18,7 @@ func _ready() -> void:
 	the_player.shot_a_shootay.connect( the_shootay_manager.make_shootay)
 	the_player.died.connect( game_over )
 
-	$EnemyManager.player_ref = the_player
+#	$EnemyManager.player_ref = the_player
 
 	the_player.boosted.connect( func(pos: Vector2):
 		# -- make a streak along this path

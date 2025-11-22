@@ -51,7 +51,25 @@ script = ExtResource("6_7mycd")
 [node name="vfx_container" type="Node2D" parent="."]
 script = ExtResource("7_272bh")
 
-[node name="EnemyManager" parent="." instance=ExtResource("7_kek77")]
+[node name="EnemyManager" parent="." node_paths=PackedStringArray("spawn_points") instance=ExtResource("7_kek77")]
+enemy_scene = ExtResource("13_ycdy4")
+max_enemies = 3
+spawn_points = [NodePath("SpawnPoints/Marker2D"), NodePath("SpawnPoints/Marker2D2"), NodePath("SpawnPoints/Marker2D3"), NodePath("SpawnPoints/Marker2D4")]
+
+[node name="Marker2D" parent="EnemyManager/SpawnPoints" index="0"]
+position = Vector2(636, 153)
+
+[node name="Marker2D2" parent="EnemyManager/SpawnPoints" index="1"]
+position = Vector2(-664, 47)
+
+[node name="Marker2D3" parent="EnemyManager/SpawnPoints" index="2"]
+position = Vector2(-432, -318)
+
+[node name="Marker2D4" parent="EnemyManager/SpawnPoints" index="3"]
+position = Vector2(100, -452)
+
+[node name="SpawnInterval" parent="EnemyManager" index="1"]
+one_shot = false
 
 [node name="PostProcessing" type="CanvasLayer" parent="." node_paths=PackedStringArray("cam")]
 script = ExtResource("10_efxa6")
@@ -71,3 +89,5 @@ pivot_offset = Vector2(-5428, 278)
 
 [node name="Mob" parent="." instance=ExtResource("13_ycdy4")]
 position = Vector2(-542, -311)
+
+[editable path="EnemyManager"]
