@@ -46,6 +46,7 @@ func increment_overload(inc: int):
 		assert( false )
 		emit_signal("overloaded")
 
+
 func clear_overload():
 	stack = 0
 	shootay_val = null

@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://c2eah12q8mrq"]
+[gd_scene load_steps=26 format=3 uid="uid://c2eah12q8mrq"]
 
 [ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://da5u341rusojd" path="res://player/charge_manager.gd" id="16_tqiix"]
 [ext_resource type="Script" uid="uid://dc400mxlxgxgu" path="res://player/overload_manager.gd" id="17_tqiix"]
 [ext_resource type="PackedScene" uid="uid://c0ndok2t2r1ij" path="res://player/melee/melee.tscn" id="18_e7oew"]
+[ext_resource type="PackedScene" uid="uid://cfke3kbu28m33" path="res://player/player_dash_effect/player_dash_effect.tscn" id="19_c35mf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
@@ -147,3 +148,13 @@ script = ExtResource("17_tqiix")
 player_sprite = NodePath("../PlayerSprite")
 
 [node name="Melee" parent="." instance=ExtResource("18_e7oew")]
+visible = false
+
+[node name="DashContainer" type="Node2D" parent="."]
+visible = false
+
+[node name="DashTimer" type="Timer" parent="DashContainer"]
+wait_time = 0.4
+one_shot = true
+
+[node name="PlayerDashEffect" parent="DashContainer" instance=ExtResource("19_c35mf")]

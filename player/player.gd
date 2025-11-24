@@ -20,6 +20,9 @@ Current Movement variables are stateful
 @export var BOOSTING_SPEED: float = 1200
 @export var ACCL := 2000.0 # -- should this be proportinoal to speed?
 @export var BOOSTING_ACCL: float = 8000
+@export var DASHING_SPEED: float = 1500
+@export var DASHING_ACCL: float = 8000
+#@export var DASHING_DECL: float = 1500
 
 # -- movement state vars
 @onready var current_speed = SPEED
@@ -42,9 +45,34 @@ Current Movement variables are stateful
 
 var can_shoot: bool # -- to prevent spamming
 
+enum MovementStates{
+	REGULAR,
+	DASHING,
+	SLIPSTREAMING,
+	GRINDING,
+	BOOSTING,
+	TELEPORTING,
+}
+
+# -- the enum of the state is now also its priority
+# -- so, e.g. Boosting overrides grinding and dashing
+# -- this is pointless right now, bcz I just copies the enum, but
+# -- you can move this around now
+const MOVEMENT_STATE_PRIORIOTY_ARR = [ 
+	MovementStates.REGULAR,
+	MovementStates.DASHING,
+	MovementStates.SLIPSTREAMING,
+	MovementStates.GRINDING,
+	MovementStates.BOOSTING,
+	MovementStates.TELEPORTING]
+
+var movement_state: MovementStates = MovementStates.REGULAR
 
 func _ready() -> void:
 	assert(input_manager)
+	
+	$DashContainer/DashTimer.timeout.connect( func():
+		movement_state_transition( MovementStates.REGULAR ))
 	
 	# -------------------------------------------------- overload manager
 	$OverloadManager.overloaded.connect( func(): pass)
@@ -67,8 +95,8 @@ func _ready() -> void:
 	$ReloadTimer.timeout.connect( func(): can_shoot = true)
 	
 	boost_timer.timeout.connect( func():
-		current_speed = SPEED
-		current_accl = ACCL)
+		movement_state_transition( MovementStates.REGULAR))
+
 	# -------------------------------------------------- 
 	$HitboxComponent.was_hit.connect( func( attack ):
 		$HitTimer.start()
@@ -90,32 +118,36 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var move_dir = input_manager.movement_vector()
-	# -- Hittimer visual
+	if input_manager.just_pressed_action( "dash"):
+		movement_state_transition(MovementStates.DASHING)
+	# -- Hittimer visual -- refactor with a modulate canvas item call I think
 	if !$HitTimer.is_stopped():
 		$PlayerSprite.material.set_shader_parameter("hit_time", Utils.normalized_timer($HitTimer))
 	# ------------------------ Move
-	
-	# -- lock the direction of boost
-	if !boost_timer.is_stopped():
-		velocity = velocity.move_toward( boost_dir * current_speed,
-										 current_accl * delta)
-	else:
-		if !move_dir.is_equal_approx( Vector2.ZERO ):
+	var move_dir = input_manager.movement_vector()
+	match movement_state:
+		MovementStates.REGULAR:
+			if !move_dir.is_equal_approx( Vector2.ZERO ):
 			# -- accl to target velocity
-			velocity = velocity.move_toward(move_dir.normalized() * current_speed,
-											current_accl * delta)
-		else:
-			# -- decl to stop
-			velocity = velocity.move_toward(Vector2.ZERO,
-											current_decl * delta)
+				velocity = velocity.move_toward(move_dir.normalized() * current_speed,
+												current_accl * delta)
+			else:
+				# -- decl to stop
+				velocity = velocity.move_toward(Vector2.ZERO,
+												current_decl * delta)
+		MovementStates.BOOSTING:
+			velocity = velocity.move_toward( boost_dir * current_speed,
+										 	 current_accl * delta)
+		MovementStates.DASHING:
+			velocity = velocity.move_toward( dash_dir * current_speed,
+										 	 current_accl * delta)
 	move_and_slide()
 
 
 var boost_dir:= Vector2.ZERO
 
 func boost(a_shootay_vel: Vector2):
-	$Melee.do_melee()
+	movement_state_transition(MovementStates.BOOSTING)
 	emit_signal("overload_cleared")
 	Utils.hit_stop(0.05, 0.3)
 	$OverloadManager.clear_overload()
@@ -148,6 +180,53 @@ func shoot_a_shootay(shootay_value:ShootayGlobals.ShootayValues):
 func teleport(pos: Vector2):
 	$OverloadManager.clear_overload()
 	emit_signal("overload_cleared")
-	$Melee.do_melee()
+	#$Melee.do_melee()
 	$TeleportContainer.teleport()
 	global_position = pos
+
+
+var dash_dir: Vector2 = Vector2.ZERO
+func dash(b: bool=true):
+	$DashContainer/DashTimer.start()
+	# -- make player invulnerable
+	
+	dash_dir = input_manager.movement_vector()
+	# -- slow down for emphasis
+	Utils.hit_stop(0.05, 0.3)
+	
+	# -- change kinematics
+	current_speed = DASHING_SPEED
+	current_accl  = DASHING_ACCL
+	
+	# -- do vfx
+
+func return_to_normal_movement():
+	current_speed = SPEED
+	current_accl = ACCL
+
+
+func movement_state_transition(new_movement_state: MovementStates):
+	if movement_state != new_movement_state:
+		match movement_state:
+			MovementStates.REGULAR:
+				match new_movement_state:
+					MovementStates.DASHING:
+						dash()
+					# gotta make a closure around something
+					#MovementStates.BOOSTING:
+						#
+			MovementStates.DASHING:
+				if new_movement_state == MovementStates.REGULAR:
+					return_to_normal_movement()
+			MovementStates.SLIPSTREAMING:
+				pass
+			MovementStates.GRINDING:
+				pass
+			MovementStates.BOOSTING:
+				if new_movement_state == MovementStates.REGULAR:
+					return_to_normal_movement()
+			MovementStates.TELEPORTING:
+				pass
+		# ----------------------------------
+		movement_state = new_movement_state
+		# ----------------------------------
