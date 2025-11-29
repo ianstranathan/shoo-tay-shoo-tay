@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=18 format=3 uid="uid://cnjs673hgk6wm"]
 
 [ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bgodmmno8hffy" path="res://main.gd" id="1_lquwl"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://brbsqoshfpptq" path="res://enemies/mob.tscn" id="11_vivmo"]
 [ext_resource type="PackedScene" uid="uid://dwcba7qkw7dhb" path="res://input_manager/input_manager.tscn" id="12_dg77c"]
 [ext_resource type="PackedScene" uid="uid://cip6vld11sh2a" path="res://UI/UI.tscn" id="13_ycdy4"]
+[ext_resource type="PackedScene" uid="uid://mbm0kx3qjsi0" path="res://enemies/dummy/dummy.tscn" id="16_2cqfq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efxa6"]
 shader = ExtResource("10_4c57u")
@@ -94,5 +95,17 @@ pivot_offset = Vector2(-5428, 278)
 [node name="Mob" parent="." instance=ExtResource("13_ycdy4")]
 
 [node name="UI" parent="." instance=ExtResource("13_ycdy4")]
+
+[node name="Dummy" parent="." instance=ExtResource("16_2cqfq")]
+position = Vector2(0, 449)
+
+[node name="Dummy2" parent="." instance=ExtResource("16_2cqfq")]
+position = Vector2(213, 449)
+
+[node name="Dummy3" parent="." instance=ExtResource("16_2cqfq")]
+position = Vector2(402, 449)
+
+[node name="Dummy4" parent="." instance=ExtResource("16_2cqfq")]
+position = Vector2(542, 449)
 
 [editable path="EnemyManager"]

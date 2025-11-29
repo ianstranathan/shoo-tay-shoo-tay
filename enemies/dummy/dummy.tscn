@@ -1,0 +1,27 @@
+[gd_scene load_steps=7 format=3 uid="uid://mbm0kx3qjsi0"]
+
+[ext_resource type="Script" uid="uid://quu7rntjjqd1" path="res://enemies/dummy/dummy.gd" id="1_plqdg"]
+[ext_resource type="Script" uid="uid://bsylm61xpi4k7" path="res://components/hitbox_component.gd" id="1_ppmjh"]
+[ext_resource type="Shader" uid="uid://bubblhcr8cduv" path="res://enemies/dummy/dummy.gdshader" id="2_oopmi"]
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="3_oopmi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_plqdg"]
+shader = ExtResource("2_oopmi")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oopmi"]
+radius = 47.0106
+
+[node name="Dummy" type="Node2D"]
+script = ExtResource("1_plqdg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_plqdg")
+texture = ExtResource("3_oopmi")
+
+[node name="HitboxComponent" type="Area2D" parent="." groups=["Enemy"]]
+collision_mask = 13
+script = ExtResource("1_ppmjh")
+metadata/_custom_type_script = "uid://bsylm61xpi4k7"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+shape = SubResource("CircleShape2D_oopmi")

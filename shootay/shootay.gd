@@ -22,6 +22,9 @@ var player_ref: Player
 var wrapping_bounds: Vector2
 var wrapping_buffer: float
 
+var transmission_stack_count: int = 0
+@export var num_transmissions_to_mark: int = 3
+
 func _ready() -> void:
 	ray.enabled = false
 	#assert(shootay_value)
@@ -33,7 +36,17 @@ func _ready() -> void:
 	# -- there is a unique id given by manager to resolve who explodes
 	# -- to prevent multiple explosions
 	$Area2D.collided_with_shoootay.connect( shootay_collided_with_shoootay_fn )
-	
+	$Area2D.collided_with_hitbox.connect( func( area: Area2D):
+		if is_transmitting_shootay():
+			if !$MarkingTimer.is_stopped():
+				transmission_stack_count += 1
+				# particle stuff here
+				if transmission_stack_count % num_transmissions_to_mark == 0:
+					area.get_parent().mark_for_teleport()
+				# -- reset clock
+			$MarkingTimer.start())
+			
+			
 	$Area2D.collided_with_body.connect( func():
 		ray.enabled = true)
 
