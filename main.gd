@@ -26,7 +26,7 @@ func _ready() -> void:
 			$vfx_container.start_dash_effect(_player, dir, speed, timer))
 	the_player.stopped_dashing.connect( func():
 			$vfx_container.stop_dash_effect())
-	$EnemyManager.player_ref = the_player
+	# $EnemyManager.player_ref = the_player
 
 	the_player.boosted.connect( func(pos: Vector2):
 		# -- make a streak along this path

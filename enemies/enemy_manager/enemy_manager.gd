@@ -8,18 +8,21 @@ extends Node
 
 func _ready() -> void:
 	$SpawnInterval.timeout.connect(can_spawn)
-	
+
+
 func can_spawn() -> void:
 	var e_alive : = get_tree().get_nodes_in_group("Enemy").size()
 	if e_alive >= max_enemies:
 		return
 	spawn_enemy()
 
+
 func spawn_enemy() -> void:
 	var enemy : = enemy_scene.instantiate()
 	enemy.global_position = set_spawn_location()
 	add_child(enemy)
-		
+
+
 func set_spawn_location() -> Vector2:
 	return spawn_points[randi() % spawn_points.size()].global_position
 	 
