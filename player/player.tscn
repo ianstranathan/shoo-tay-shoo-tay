@@ -1,22 +1,25 @@
-[gd_scene load_steps=24 format=3 uid="uid://c2eah12q8mrq"]
+[gd_scene load_steps=25 format=3 uid="uid://c2eah12q8mrq"]
 
 [ext_resource type="Shader" uid="uid://1s86mxlw57hy" path="res://player/player.gdshader" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="1_rkbax"]
 [ext_resource type="Script" uid="uid://qlxe067lrvwq" path="res://player/player.gd" id="1_yw30f"]
 [ext_resource type="Texture2D" uid="uid://dkr8u5nmt6ncg" path="res://assets/T_Random_23.png" id="3_qjkh3"]
-[ext_resource type="Shader" uid="uid://c4a4eplt6ovbr" path="res://player/aim_visual/aim_visual.gdshader" id="4_yw30f"]
-[ext_resource type="Script" path="res://components/hitbox_component.gd" id="7_boad6"]
-[ext_resource type="Script" uid="uid://ccwxhn5qualum" path="res://player/boost_container.gd" id="8_8t03j"]
-[ext_resource type="Script" uid="uid://ubpvahb2j2x0" path="res://player/boost_trail_line.gd" id="8_hg6s5"]
+
+[ext_resource type="Shader" uid="uid://c4a4eplt6ovbr" path="res://player/aiming/aim_visual.gdshader" id="4_yw30f"]
+[ext_resource type="Script" uid="uid://bsylm61xpi4k7" path="res://components/hitbox_component.gd" id="7_boad6"]
+[ext_resource type="Script" uid="uid://ccwxhn5qualum" path="res://player/boost/boost_container.gd" id="8_8t03j"]
+[ext_resource type="Script" uid="uid://ubpvahb2j2x0" path="res://player/boost/boost_trail_line.gd" id="8_hg6s5"]
+
 [ext_resource type="Script" uid="uid://dtveseykhco0l" path="res://components/health_component.gd" id="8_rgyib"]
-[ext_resource type="Shader" uid="uid://ditunhnmlpyc6" path="res://player/teleport_visual.gdshader" id="10_8t03j"]
-[ext_resource type="Script" uid="uid://bcq8k3p1lmnuy" path="res://player/teleport_container.gd" id="10_ebec5"]
+[ext_resource type="Shader" uid="uid://ditunhnmlpyc6" path="res://player/teleport/teleport_visual.gdshader" id="10_8t03j"]
+[ext_resource type="Script" uid="uid://bcq8k3p1lmnuy" path="res://player/teleport/teleport_container.gd" id="10_ebec5"]
 [ext_resource type="Texture2D" uid="uid://uilgwob7ic0v" path="res://vfx/reusable_seamless_fastnoise_lite.tres" id="11_2ieo8"]
-[ext_resource type="Script" uid="uid://pqsrvf3go1sf" path="res://player/aiming_manager.gd" id="12_yllr7"]
-[ext_resource type="Shader" uid="uid://ddtmmngp2mvxn" path="res://player/mouse_aim_visual.gdshader" id="14_kb6p2"]
-[ext_resource type="Shader" uid="uid://cvmj0eyhtnn0j" path="res://player/fully_charged_visual.gdshader" id="16_32hag"]
+[ext_resource type="Script" uid="uid://pqsrvf3go1sf" path="res://player/aiming/aiming_manager.gd" id="12_yllr7"]
+[ext_resource type="Shader" uid="uid://ddtmmngp2mvxn" path="res://player/aiming/mouse_aim_visual.gdshader" id="14_kb6p2"]
+[ext_resource type="Shader" uid="uid://cvmj0eyhtnn0j" path="res://player/overload/fully_charged_visual.gdshader" id="16_32hag"]
 [ext_resource type="Script" uid="uid://da5u341rusojd" path="res://player/charge_manager.gd" id="16_tqiix"]
-[ext_resource type="Script" uid="uid://dc400mxlxgxgu" path="res://player/overload_manager.gd" id="17_tqiix"]
+[ext_resource type="Script" uid="uid://dc400mxlxgxgu" path="res://player/overload/overload_manager.gd" id="17_tqiix"]
+[ext_resource type="PackedScene" uid="uid://c0ndok2t2r1ij" path="res://player/melee/melee.tscn" id="18_e7oew"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yw30f"]
 shader = ExtResource("1_g1dw6")
@@ -58,6 +61,10 @@ aiming_manager = NodePath("AimingManager")
 player_sprite = NodePath("PlayerSprite")
 boost_timer = NodePath("BoostContainer/BoostTimer")
 
+[node name="DashTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_yw30f")
 scale = Vector2(2, 2)
@@ -83,7 +90,7 @@ metadata/_custom_type_script = "uid://dtveseykhco0l"
 
 [node name="HitboxComponent" type="Area2D" parent="." groups=["Player"]]
 collision_layer = 2
-collision_mask = 12
+collision_mask = 28
 script = ExtResource("7_boad6")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitboxComponent"]
@@ -119,7 +126,7 @@ script = ExtResource("10_ebec5")
 
 [node name="TeleportVisual" type="Sprite2D" parent="TeleportContainer"]
 material = SubResource("ShaderMaterial_2ieo8")
-scale = Vector2(1.5, 1.5)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("1_rkbax")
 
 [node name="HitTimer" type="Timer" parent="."]
@@ -144,3 +151,6 @@ texture = ExtResource("1_rkbax")
 [node name="OverloadManager" type="Node" parent="." node_paths=PackedStringArray("player_sprite")]
 script = ExtResource("17_tqiix")
 player_sprite = NodePath("../PlayerSprite")
+
+[node name="Melee" parent="." instance=ExtResource("18_e7oew")]
+visible = false

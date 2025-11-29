@@ -42,3 +42,11 @@ func hit_stop(time_scale: float, duration: float):
 	Engine.time_scale = time_scale
 	await(get_tree().create_timer(duration * time_scale).timeout)
 	Engine.time_scale = 1.0
+	
+	
+func get_used_collision_mask_layers(obj: Node2D, 
+									saved_masks_array: Array,
+									num_masks_to_check=33):
+	for i in range(1, num_masks_to_check):
+		if obj.get_collision_mask_value(i):
+			saved_masks_array.append(i)

@@ -1,0 +1,37 @@
+[gd_scene load_steps=9 format=3 uid="uid://b6f8y55yv5qf5"]
+
+[ext_resource type="Script" uid="uid://glvss64t8b8g" path="res://vfx/dash_streak/dash_streak.gd" id="1_pys4w"]
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="2_dclw0"]
+[ext_resource type="Shader" uid="uid://be64w3touiqeg" path="res://vfx/dash_streak/direction_line.gdshader" id="2_yjiaw"]
+[ext_resource type="Texture2D" uid="uid://uilgwob7ic0v" path="res://vfx/reusable_seamless_fastnoise_lite.tres" id="3_y261y"]
+[ext_resource type="Shader" uid="uid://c4ydtswyg7277" path="res://vfx/dash_streak/basic_after_image.gdshader" id="5_px1ft"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_px1ft"]
+shader = ExtResource("2_yjiaw")
+shader_parameter/noise_tex = ExtResource("3_y261y")
+shader_parameter/t = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v7qng"]
+shader = ExtResource("5_px1ft")
+shader_parameter/alpha = 0.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_px1ft"]
+particle_flag_disable_z = true
+gravity = Vector3(0, 0, 0)
+
+[node name="DashStreak" type="Node2D"]
+script = ExtResource("1_pys4w")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_px1ft")
+texture = ExtResource("2_dclw0")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+material = SubResource("ShaderMaterial_v7qng")
+rotation = -2.03156
+emitting = false
+amount = 4
+texture = ExtResource("2_dclw0")
+lifetime = 0.5
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_px1ft")

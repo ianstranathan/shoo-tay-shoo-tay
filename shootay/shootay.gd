@@ -79,7 +79,7 @@ func reflect():
 		#if ray.get_collider() is Player:
 			#queue_free()
 		stretch_squash( false )
-		vel = vel.bounce( n )
+		vel = vel.bounce( n ) * 0.8
 		rotation_from_velocity_vector( vel )
 		ray.enabled = false
 

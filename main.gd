@@ -15,16 +15,26 @@ func _ready() -> void:
 	the_shootay_manager.cam_ref = cam_ref
 	the_shootay_manager.player_ref = the_player
 	
-	the_player.shot_a_shootay.connect( the_shootay_manager.make_shootay)
+	the_player.shot_a_shootay.connect( 
+		func( pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.ShootayValues):
+			the_shootay_manager.make_shootay.call(pos,  dir, shootay_value)
+			$UI.shoot(shootay_value))
 	the_player.died.connect( game_over )
 
-#	$EnemyManager.player_ref = the_player
+	the_player.started_dashing.connect( 
+		func( _player: CharacterBody2D, dir: Vector2, speed: float, timer: Timer):
+			$vfx_container.start_dash_effect(_player, dir, speed, timer))
+	the_player.stopped_dashing.connect( func():
+			$vfx_container.stop_dash_effect())
+	$EnemyManager.player_ref = the_player
 
 	the_player.boosted.connect( func(pos: Vector2):
 		# -- make a streak along this path
 		
 		# -- blur
 		$PostProcessing.shockwave(pos))
+	the_player.overload_cleared.connect( func(): $UI.clear_shootay_meter() )
+	#$UI
 
 func game_over():
 	# -- slow the tick rate way down for a minute, zoom in on how terrible
