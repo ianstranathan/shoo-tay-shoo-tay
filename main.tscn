@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=16 format=3 uid="uid://cnjs673hgk6wm"]
 
 [ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bgodmmno8hffy" path="res://main.gd" id="1_lquwl"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://cj5le4ngvuhl6" path="res://shootay_manager.gd" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://c24o054px4d8u" path="res://vfx_container.gd" id="7_272bh"]
 [ext_resource type="PackedScene" uid="uid://cj4e05skrr1ug" path="res://enemies/enemy_manager/enemy_manager.tscn" id="7_kek77"]
+[ext_resource type="PackedScene" uid="uid://b6f8y55yv5qf5" path="res://vfx/dash_streak/dash_streak.tscn" id="9_w48qg"]
 [ext_resource type="Shader" uid="uid://c665h87g6h08y" path="res://post_processing/shockwave.gdshader" id="10_4c57u"]
 [ext_resource type="Script" uid="uid://bnfbldgjulexf" path="res://post_processing_layer.gd" id="10_efxa6"]
 [ext_resource type="PackedScene" uid="uid://dwcba7qkw7dhb" path="res://input_manager/input_manager.tscn" id="12_dg77c"]
@@ -50,6 +51,8 @@ script = ExtResource("6_7mycd")
 
 [node name="vfx_container" type="Node2D" parent="."]
 script = ExtResource("7_272bh")
+
+[node name="DashStreak" parent="vfx_container" instance=ExtResource("9_w48qg")]
 
 [node name="EnemyManager" parent="." instance=ExtResource("7_kek77")]
 

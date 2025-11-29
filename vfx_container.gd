@@ -13,6 +13,7 @@ func _ready() -> void:
 		add_child(_expl)
 		_expl.global_position = pos)
 
+
 func make_collision_particle(pos: Vector2, normal: Vector2) -> void:
 	var p = impact_particles.instantiate()
 	add_child(p)
@@ -20,3 +21,11 @@ func make_collision_particle(pos: Vector2, normal: Vector2) -> void:
 	p.global_position = pos
 	p.global_rotation = Vector2.RIGHT.angle_to( normal )
 	p.emitting = true
+
+
+func start_dash_effect( player: CharacterBody2D, dir: Vector2, speed: float, timer: Timer):
+	$DashStreak.start_dashing(player, dir, speed, timer)
+
+
+func stop_dash_effect():
+	$DashStreak.stop_dashing()

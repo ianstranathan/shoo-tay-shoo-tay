@@ -21,11 +21,11 @@ mat2 rot(float angle){
 
 
 const float tri_height = 0.5;
-
+uniform float alpha = 0.0;
 void fragment() {
 	vec2 uv = 2. * UV - 1.;
 	// -- shape sdf
-	uv = rot(PI / 2.0) * uv;
+	uv = rot(alpha + (PI / 2.0)) * uv;
 	float _sdf = sdTriangleIsosceles( uv + vec2(0., 0.6 * tri_height), vec2(0.35 * tri_height, tri_height));
 	float shape_mask = (1. - smoothstep(0., 0.05, _sdf));
 	COLOR = 0.5 * vec4(vec3(1., 0., 1.) * shape_mask, COLOR.w * shape_mask);

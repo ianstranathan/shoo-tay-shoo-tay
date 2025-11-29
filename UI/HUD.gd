@@ -9,7 +9,7 @@ extends Control
 var t = 0.0
 func _ready() -> void:
 	#var _size = $TextureRect.scale * $TextureRect.texture.get_size()
-	print( size )
+	#print( size )
 	var vp_dim = get_viewport().size
 	
 	# -- TODO

@@ -52,27 +52,3 @@ func clear_overload():
 	shootay_val = null
 	player_sprite.material.set_shader_parameter("t", 0.0)
 	player_sprite.material.set_shader_parameter("src_col", Color(1., 1., 1., 1.))
-
-
-#func fune_fune_switch():
-	#reset_overload()
-	#if shootay_val == ShootayGlobals.ShootayValues.TRANSMIT:
-		#shootay_val = ShootayGlobals.ShootayValues.REFLECT
-		#player_sprite.material.set_shader_parameter("src_col", ShootayGlobals.reflect_col)
-	#else:
-		#shootay_val = ShootayGlobals.ShootayValues.TRANSMIT
-		#player_sprite.material.set_shader_parameter("src_col", ShootayGlobals.transmit_col)
-
-
-#func increase_overload():
-	#if num_current_switches > num_switches_allowed:
-		#emit_signal("overloaded")
-	#else:
-		#num_current_switches += 1
-		#player_sprite.material.set_shader_parameter("t", float(num_current_switches) / float(num_switches_allowed))
-
-#var num_current_switches: int = 0
-#func reset_overload() -> void:
-	#num_current_switches = 0
-	#player_sprite.material.set_shader_parameter("t", 0.0)
-	#
