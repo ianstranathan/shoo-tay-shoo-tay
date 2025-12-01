@@ -195,8 +195,7 @@ func teleport(pos: Vector2):
 
 
 var dash_dir: Vector2 = Vector2.ZERO
-func dash(b: bool=true):
-	
+func dash():
 	$DashTimer.start()
 	# -- make player invulnerable
 	$HitboxComponent.make_invulnerable( true )
@@ -211,6 +210,7 @@ func dash(b: bool=true):
 	# -- do vfx
 	emit_signal("started_dashing", self, dash_dir, DASHING_SPEED, $DashTimer)
 
+	# -- 
 
 func return_to_normal_movement():
 	current_speed = SPEED

@@ -1,9 +1,10 @@
-extends Node
+extends Control
 
+signal started_game
 
-@export var HUD: Control
-func shoot(shootay_val: ShootayGlobals.ShootayValues):
-	HUD.shoot(shootay_val)
+func _ready() -> void:
+	$StartMenu.start_pressed.connect( func():
+		emit_signal( "started_game" )
+		visible = false
+		)
 	
-func clear_shootay_meter():
-	HUD.clear_shootay_meter()

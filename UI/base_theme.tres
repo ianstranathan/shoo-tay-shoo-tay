@@ -1,7 +1,12 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cscig3q1q8qpn"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cscig3q1q8qpn"]
 
 [ext_resource type="FontFile" uid="uid://devv5inxdr6i5" path="res://assets/fonts/scoreboard-type-font/ScoreboardTypeItalicPersonal-nRWO0.ttf" id="1_senvt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_senvt"]
+bg_color = Color(0.787759, 0.787759, 0.787759, 1)
 
 [resource]
 default_font = ExtResource("1_senvt")
 default_font_size = 100
+Button/colors/font_hover_color = Color(0.94902, 0, 0.94902, 1)
+Button/styles/hover = SubResource("StyleBoxFlat_senvt")

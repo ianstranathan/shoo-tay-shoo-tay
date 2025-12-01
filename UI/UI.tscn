@@ -1,40 +1,23 @@
-[gd_scene load_steps=7 format=3 uid="uid://cip6vld11sh2a"]
+[gd_scene load_steps=3 format=3 uid="uid://cip6vld11sh2a"]
 
-[ext_resource type="PackedScene" uid="uid://swfibnvqutyk" path="res://UI/start_menu.tscn" id="1_6dd3c"]
-[ext_resource type="Script" uid="uid://dd5afy36imtyk" path="res://UI/HUD.gd" id="1_e707p"]
+[ext_resource type="PackedScene" uid="uid://swfibnvqutyk" path="res://UI/start_menu/start_menu.tscn" id="1_6dd3c"]
 [ext_resource type="Script" uid="uid://blhvttrfwtib1" path="res://UI/UI.gd" id="1_f1fl4"]
-[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="2_dhe1o"]
-[ext_resource type="Shader" uid="uid://g5yobx3fw1eq" path="res://UI/ShootayMeter/ShootayMeterShader.gdshader" id="2_q0uhn"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_e707p"]
-shader = ExtResource("2_q0uhn")
-shader_parameter/t = -1.0
-
-[node name="UI" type="Node" node_paths=PackedStringArray("HUD")]
-script = ExtResource("1_f1fl4")
-HUD = NodePath("CanvasLayer/HUD")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="HUD" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("shootay_meter")]
+[node name="UI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-script = ExtResource("1_e707p")
-shootay_meter = NodePath("TextureRect")
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_f1fl4")
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HUD"]
-material = SubResource("ShaderMaterial_e707p")
+[node name="StartMenu" parent="." instance=ExtResource("1_6dd3c")]
 layout_mode = 1
-offset_right = 600.0
-offset_bottom = 128.0
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_dhe1o")
-
-[node name="StartMenu" parent="CanvasLayer" instance=ExtResource("1_6dd3c")]
-visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5

@@ -15,4 +15,3 @@ void fragment() {
 	vec3 col = vec3(0.8);
 	COLOR = vec4(col, mask);
 }
-

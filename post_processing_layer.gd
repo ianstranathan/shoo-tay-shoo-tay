@@ -35,7 +35,7 @@ func should_do_effects():
 												  true)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if do_effects:
 		for fn in effects_fn_dict:
 			effects_fn_dict[fn].call()

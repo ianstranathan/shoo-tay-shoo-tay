@@ -1,8 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://cnjs673hgk6wm"]
+[gd_scene load_steps=20 format=3 uid="uid://cnjs673hgk6wm"]
 
 [ext_resource type="PackedScene" uid="uid://c2eah12q8mrq" path="res://player/player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bgodmmno8hffy" path="res://main.gd" id="1_lquwl"]
 [ext_resource type="PackedScene" uid="uid://dj0ps4y0nxcjp" path="res://levels/level0.tscn" id="2_7mycd"]
+[ext_resource type="PackedScene" uid="uid://dav2sfa6hmrvh" path="res://game/game.tscn" id="2_yaehf"]
 [ext_resource type="Script" uid="uid://dbx6y30r5vrjs" path="res://camera/cam.gd" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://b717816mvrhfr" path="res://camera/follow_rig.gd" id="4_4c57u"]
 [ext_resource type="Script" uid="uid://dgk6ocqcbjwkr" path="res://camera/shake_pivot.gd" id="5_efxa6"]
@@ -14,73 +15,78 @@
 [ext_resource type="Script" uid="uid://bnfbldgjulexf" path="res://post_processing_layer.gd" id="10_efxa6"]
 [ext_resource type="PackedScene" uid="uid://brbsqoshfpptq" path="res://enemies/mob.tscn" id="11_vivmo"]
 [ext_resource type="PackedScene" uid="uid://dwcba7qkw7dhb" path="res://input_manager/input_manager.tscn" id="12_dg77c"]
-[ext_resource type="PackedScene" uid="uid://cip6vld11sh2a" path="res://UI/UI.tscn" id="13_ycdy4"]
+[ext_resource type="PackedScene" uid="uid://ceo0ayafm7c6m" path="res://UI/HUD/hud.tscn" id="15_yaehf"]
 [ext_resource type="PackedScene" uid="uid://mbm0kx3qjsi0" path="res://enemies/dummy/dummy.tscn" id="16_2cqfq"]
+[ext_resource type="PackedScene" uid="uid://cip6vld11sh2a" path="res://UI/UI.tscn" id="18_074og"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efxa6"]
 shader = ExtResource("10_4c57u")
 shader_parameter/t = 0.1
 shader_parameter/offset = Vector2(0, 0)
 
-[node name="Main" type="Node" node_paths=PackedStringArray("the_player", "level", "the_shootay_manager", "cam_ref")]
+[node name="Main" type="Node" node_paths=PackedStringArray("UI")]
 script = ExtResource("1_lquwl")
+UI = NodePath("CanvasLayer/UI")
+
+[node name="Game" parent="." node_paths=PackedStringArray("the_player", "level", "the_shootay_manager", "cam_ref", "HUD") instance=ExtResource("2_yaehf")]
 the_player = NodePath("Player")
 level = NodePath("Level")
 the_shootay_manager = NodePath("ShootayManager")
 cam_ref = NodePath("FollowRig/ShakePivot/Camera2D")
+HUD = NodePath("../CanvasLayer/HUD")
 
-[node name="Level" parent="." instance=ExtResource("2_7mycd")]
+[node name="Level" parent="Game" instance=ExtResource("2_7mycd")]
 
-[node name="Player" parent="." node_paths=PackedStringArray("input_manager") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="Game" node_paths=PackedStringArray("input_manager") instance=ExtResource("1_ig7tw")]
 input_manager = NodePath("../InputManager")
 
-[node name="FollowRig" type="Node2D" parent="." node_paths=PackedStringArray("target")]
+[node name="FollowRig" type="Node2D" parent="Game" node_paths=PackedStringArray("target")]
 script = ExtResource("4_4c57u")
 target = NodePath("../Player")
 
-[node name="ShakePivot" type="Node2D" parent="FollowRig"]
+[node name="ShakePivot" type="Node2D" parent="Game/FollowRig"]
 script = ExtResource("5_efxa6")
 
-[node name="ShootShakeTimer" type="Timer" parent="FollowRig/ShakePivot"]
+[node name="ShootShakeTimer" type="Timer" parent="Game/FollowRig/ShakePivot"]
 wait_time = 0.2
 one_shot = true
 
-[node name="Camera2D" type="Camera2D" parent="FollowRig/ShakePivot"]
+[node name="Camera2D" type="Camera2D" parent="Game/FollowRig/ShakePivot"]
 script = ExtResource("4_1bvp3")
 
-[node name="ShootayManager" type="Node2D" parent="."]
+[node name="ShootayManager" type="Node2D" parent="Game"]
 script = ExtResource("6_7mycd")
 
-[node name="vfx_container" type="Node2D" parent="."]
+[node name="vfx_container" type="Node2D" parent="Game"]
 script = ExtResource("7_272bh")
 
-[node name="DashStreak" parent="vfx_container" instance=ExtResource("9_w48qg")]
+[node name="DashStreak" parent="Game/vfx_container" instance=ExtResource("9_w48qg")]
 
-[node name="EnemyManager" parent="." node_paths=PackedStringArray("spawn_points") instance=ExtResource("7_kek77")]
+[node name="EnemyManager" parent="Game" node_paths=PackedStringArray("spawn_points") instance=ExtResource("7_kek77")]
 enemy_scene = ExtResource("11_vivmo")
 max_enemies = 3
 spawn_points = [NodePath("SpawnPoints/Marker2D"), NodePath("SpawnPoints/Marker2D2"), NodePath("SpawnPoints/Marker2D3"), NodePath("SpawnPoints/Marker2D4")]
 
-[node name="Marker2D" parent="EnemyManager/SpawnPoints" index="0"]
+[node name="Marker2D" parent="Game/EnemyManager/SpawnPoints" index="0"]
 position = Vector2(636, 153)
 
-[node name="Marker2D2" parent="EnemyManager/SpawnPoints" index="1"]
+[node name="Marker2D2" parent="Game/EnemyManager/SpawnPoints" index="1"]
 position = Vector2(-664, 47)
 
-[node name="Marker2D3" parent="EnemyManager/SpawnPoints" index="2"]
+[node name="Marker2D3" parent="Game/EnemyManager/SpawnPoints" index="2"]
 position = Vector2(-432, -318)
 
-[node name="Marker2D4" parent="EnemyManager/SpawnPoints" index="3"]
+[node name="Marker2D4" parent="Game/EnemyManager/SpawnPoints" index="3"]
 position = Vector2(100, -452)
 
-[node name="SpawnInterval" parent="EnemyManager" index="1"]
+[node name="SpawnInterval" parent="Game/EnemyManager" index="1"]
 one_shot = false
 
-[node name="PostProcessing" type="CanvasLayer" parent="." node_paths=PackedStringArray("cam")]
+[node name="PostProcessing" type="CanvasLayer" parent="Game" node_paths=PackedStringArray("cam")]
 script = ExtResource("10_efxa6")
 cam = NodePath("../FollowRig/ShakePivot/Camera2D")
 
-[node name="ColorRect" type="ColorRect" parent="PostProcessing"]
+[node name="ColorRect" type="ColorRect" parent="Game/PostProcessing"]
 visible = false
 material = SubResource("ShaderMaterial_efxa6")
 anchors_preset = 15
@@ -90,22 +96,29 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(-5428, 278)
 
-[node name="InputManager" parent="." instance=ExtResource("12_dg77c")]
+[node name="InputManager" parent="Game" instance=ExtResource("12_dg77c")]
 
-[node name="Mob" parent="." instance=ExtResource("13_ycdy4")]
-
-[node name="UI" parent="." instance=ExtResource("13_ycdy4")]
-
-[node name="Dummy" parent="." instance=ExtResource("16_2cqfq")]
+[node name="Dummy" parent="Game" instance=ExtResource("16_2cqfq")]
 position = Vector2(0, 449)
 
-[node name="Dummy2" parent="." instance=ExtResource("16_2cqfq")]
+[node name="Dummy2" parent="Game" instance=ExtResource("16_2cqfq")]
 position = Vector2(213, 449)
 
-[node name="Dummy3" parent="." instance=ExtResource("16_2cqfq")]
+[node name="Dummy3" parent="Game" instance=ExtResource("16_2cqfq")]
 position = Vector2(402, 449)
 
-[node name="Dummy4" parent="." instance=ExtResource("16_2cqfq")]
+[node name="Dummy4" parent="Game" instance=ExtResource("16_2cqfq")]
 position = Vector2(542, 449)
 
-[editable path="EnemyManager"]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" parent="CanvasLayer" instance=ExtResource("18_074og")]
+
+[node name="HUD" parent="CanvasLayer" instance=ExtResource("15_yaehf")]
+anchors_preset = 12
+anchor_top = 1.0
+offset_top = -105.0
+offset_bottom = -105.0
+grow_vertical = 0
+
+[editable path="Game/EnemyManager"]

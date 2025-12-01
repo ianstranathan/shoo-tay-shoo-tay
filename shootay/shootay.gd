@@ -22,8 +22,6 @@ var player_ref: Player
 var wrapping_bounds: Vector2
 var wrapping_buffer: float
 
-var transmission_stack_count: int = 0
-@export var num_transmissions_to_mark: int = 3
 
 func _ready() -> void:
 	ray.enabled = false
@@ -36,15 +34,7 @@ func _ready() -> void:
 	# -- there is a unique id given by manager to resolve who explodes
 	# -- to prevent multiple explosions
 	$Area2D.collided_with_shoootay.connect( shootay_collided_with_shoootay_fn )
-	$Area2D.collided_with_hitbox.connect( func( area: Area2D):
-		if is_transmitting_shootay():
-			if !$MarkingTimer.is_stopped():
-				transmission_stack_count += 1
-				# particle stuff here
-				if transmission_stack_count % num_transmissions_to_mark == 0:
-					area.get_parent().mark_for_teleport()
-				# -- reset clock
-			$MarkingTimer.start())
+	$Area2D.collided_with_hitbox.connect( on_hitbox_collided )
 			
 			
 	$Area2D.collided_with_body.connect( func():
@@ -159,7 +149,7 @@ func shootay_collided_with_shoootay_fn( other: Shootay):
 			queue_free()
 		if is_reflecting_shootay():
 			ray.enabled = true
-			
+
 
 func is_reflecting_shootay() -> bool:
 	return shootay_value == ShootayGlobals.ShootayValues.REFLECT
@@ -167,3 +157,26 @@ func is_reflecting_shootay() -> bool:
 
 func is_transmitting_shootay() -> bool:
 	return not is_reflecting_shootay()
+
+
+var transmission_stack_count: int = 0
+@export var num_transmissions_to_mark: int = 3
+
+func on_hitbox_collided( hb: HitboxComponent ):
+	# -- can we always assume that to have a hb, the parent will always be the
+	# -- the objects root node?
+	var _parent = hb.get_parent()
+	
+	if not (_parent is Player):
+		# -- marker mechanic
+		if is_transmitting_shootay():
+			if !$MarkingTimer.is_stopped():
+				transmission_stack_count += 1
+				#print(transmission_stack_count)
+				if transmission_stack_count % num_transmissions_to_mark == 0:
+					hb.get_parent().mark_for_teleport()
+			else:
+				transmission_stack_count = 0
+				
+			# -- reset clock regardless
+			$MarkingTimer.start()

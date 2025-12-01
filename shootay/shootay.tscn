@@ -60,5 +60,5 @@ script = ExtResource("7_8412e")
 damage = 25.0
 
 [node name="MarkingTimer" type="Timer" parent="."]
-wait_time = 0.5
+wait_time = 5.0
 one_shot = true

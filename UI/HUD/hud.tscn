@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://ceo0ayafm7c6m"]
+
+[ext_resource type="Script" uid="uid://dd5afy36imtyk" path="res://UI/HUD/HUD.gd" id="1_te8l2"]
+[ext_resource type="Shader" uid="uid://g5yobx3fw1eq" path="res://UI/ShootayMeter/ShootayMeterShader.gdshader" id="2_qdh7y"]
+[ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="3_radol"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e707p"]
+shader = ExtResource("2_qdh7y")
+shader_parameter/t = -1.0
+
+[node name="HUD" type="Control" node_paths=PackedStringArray("shootay_meter")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+script = ExtResource("1_te8l2")
+shootay_meter = NodePath("TextureRect")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_e707p")
+layout_mode = 1
+offset_right = 600.0
+offset_bottom = 128.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_radol")

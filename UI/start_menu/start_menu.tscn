@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://swfibnvqutyk"]
 
-[ext_resource type="Script" uid="uid://deivf44x5ocny" path="res://UI/start_menu.gd" id="1_dl586"]
+[ext_resource type="Script" uid="uid://deivf44x5ocny" path="res://UI/start_menu/start_menu.gd" id="1_dl586"]
 [ext_resource type="Theme" uid="uid://cscig3q1q8qpn" path="res://UI/base_theme.tres" id="2_q5qyg"]
 
 [node name="StartMenu" type="Control" node_paths=PackedStringArray("quit_btn", "start_btn")]
