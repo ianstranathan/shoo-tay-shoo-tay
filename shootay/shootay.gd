@@ -13,8 +13,8 @@ var dist: float = 0.0
 signal shootay_collided( pos: Vector2, normal: Vector2)
 signal transmission_collided( shootay_A: Shootay, shootay_B: Shootay)
 signal transmission_shot_wrapped( shootay: Shootay)
-
-# -- NOTE shootay manager
+signal transmission_marked_collided( pos: Vector2 )
+# --------------------------------------------------- shootay manager vars
 var _id: int
 var cam_ref: Camera2D # -- assigned when shot if shootay value is transmit
 var player_ref: Player
@@ -24,7 +24,9 @@ var wrapping_buffer: float
 
 
 func _ready() -> void:
-	ray.enabled = false
+	ray.enabled = false 
+	$MarkingTimer.timeout.connect( func(): 
+		transmission_stack_count = 0)
 	#assert(shootay_value)
 	#if shootay_value == ShootayGlobals.ShootayValues.TRANSMIT:
 	assert(cam_ref and player_ref)
@@ -34,7 +36,7 @@ func _ready() -> void:
 	# -- there is a unique id given by manager to resolve who explodes
 	# -- to prevent multiple explosions
 	$Area2D.collided_with_shoootay.connect( shootay_collided_with_shoootay_fn )
-	$Area2D.collided_with_hitbox.connect( on_hitbox_collided )
+	$Area2D.hitbox_area_entered.connect( on_hitbox_area_entered )
 			
 			
 	$Area2D.collided_with_body.connect( func():
@@ -85,6 +87,7 @@ func reflect():
 		vel = vel.bounce( n ) * 0.8
 		rotation_from_velocity_vector( vel )
 		ray.enabled = false
+
 
 func shoot(_vel: Vector2, _shootay_val: ShootayGlobals.ShootayValues):
 	#$AttackComponent.dir = dir
@@ -142,8 +145,6 @@ func shootay_collided_with_shoootay_fn( other: Shootay):
 	else:
 		if (other.is_transmitting_shootay() and is_transmitting_shootay()):
 			# -- teleport signal
-			var this_id = _id
-			var other_id = other._id
 			if _id > other._id:
 				emit_signal( "transmission_collided", self, other)
 			queue_free()
@@ -160,23 +161,23 @@ func is_transmitting_shootay() -> bool:
 
 
 var transmission_stack_count: int = 0
-@export var num_transmissions_to_mark: int = 3
+@export var num_transmissions_to_mark: int = 4
 
-func on_hitbox_collided( hb: HitboxComponent ):
+func on_hitbox_area_entered( hb: HitboxComponent ):
 	# -- can we always assume that to have a hb, the parent will always be the
 	# -- the objects root node?
-	var _parent = hb.get_parent()
-	
-	if not (_parent is Player):
-		# -- marker mechanic
+	if hb.is_in_group("Enemy"):
 		if is_transmitting_shootay():
-			if !$MarkingTimer.is_stopped():
-				transmission_stack_count += 1
-				#print(transmission_stack_count)
-				if transmission_stack_count % num_transmissions_to_mark == 0:
-					hb.get_parent().mark_for_teleport()
-			else:
-				transmission_stack_count = 0
-				
-			# -- reset clock regardless
 			$MarkingTimer.start()
+			# -- if the enemy is marked, teleport to him
+			if hb.get_parent().is_marked():
+				emit_signal("transmission_marked_collided", global_position)
+				queue_free()
+			# -- otherwise, increment the transmission collision count
+			# -- and mark if enemy is the Nth one
+			transmission_stack_count += 1
+			
+			if transmission_stack_count == num_transmissions_to_mark:
+				transmission_stack_count = 0
+				print( transmission_stack_count)
+				hb.get_parent().mark_for_teleport()

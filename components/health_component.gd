@@ -15,3 +15,14 @@ func take_damge(dmg: float):
 		emit_signal("health_depeleted")
 	else:
 		emit_signal("health_changed", current_health / MAX_HEALTH)
+
+
+func restore_full_health():
+	restore_health( MAX_HEALTH - current_health)
+
+
+func restore_health(amount: float):
+	current_health += amount
+	# -- rounding for floating point errors
+	# -- round?, snapped? floor?
+	current_health = snapped(current_health, 0.01)

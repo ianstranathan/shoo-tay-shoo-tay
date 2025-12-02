@@ -8,6 +8,8 @@ var transmission_layer: int = 4
 var reflect_col: Color = Color(1.0, 0.5, 0.25, 1.0)
 var transmit_col: Color = Color(0.4, 0.7, 1.0, 1.0)
 
+var num_allowed_shots: int = 2
+
 enum ShootayValues{
 	REFLECT,
 	TRANSMIT

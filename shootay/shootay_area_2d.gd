@@ -2,8 +2,7 @@ extends Area2D
 class_name ShootayArea
 
 signal collided_with_shoootay( a_shootay: Shootay )
-signal collided_with_hitbox( area: Area2D )
-signal collided_with_not_hitbox
+signal hitbox_area_entered( area: Area2D )
 signal collided_with_body
 
 @export var attack: AttackComponent
@@ -23,9 +22,7 @@ func on_area_entered(area: Area2D):
 		emit_signal("collided_with_shoootay", area.get_parent())
 	elif area is HitboxComponent and has_left_player:
 		area.take_hit( attack)
-		emit_signal("collided_with_hitbox", area )
-	else:
-		emit_signal("collided_with_not_hitbox")
+		emit_signal("hitbox_area_entered", area )
 
 
 func on_body_entered( body ):

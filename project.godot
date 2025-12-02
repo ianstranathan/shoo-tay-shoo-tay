@@ -21,6 +21,10 @@ ShootayGlobals="*res://singletons/shootay_globals.gd"
 Utils="*res://singletons/utils.gd"
 GlobalSignals="*res://singletons/global_signals.gd"
 
+[editor_plugins]
+
+enabled=PackedStringArray()
+
 [global_group]
 
 Reflect=""

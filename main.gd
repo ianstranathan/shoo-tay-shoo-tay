@@ -2,54 +2,31 @@ extends Node
 
 @export var UI: Control
 
+# -- TODO temp prototype restart
+var restarted = false
+
 func _ready():
+	$Game.game_over.connect( end_game )
 	$Game.visible = false
 	$Game.process_mode = Node.PROCESS_MODE_DISABLED
 	UI.started_game.connect( start_game )
 
+
 func start_game():
+	$CanvasLayer/HUD.visible = true
 	$Game.visible = true
 	$Game.process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	# -- TODO temp prototype restart
+	if !restarted:
+		restarted = true
+	else:
+		$Game.restart()
+		$CanvasLayer/HUD.clear_shootay_meter()
 
 
-#@export var the_player: CharacterBody2D
-#@export var level: Node2D
-#@export var the_shootay_manager: Node2D
-#@export var cam_ref: Camera2D
-#
-#func _ready() -> void:
-	## -- consolidate these signals with an optional arg
-	#the_shootay_manager.shootay_collided.connect( func(pos: Vector2, normal: Vector2): 
-		#$vfx_container.make_collision_particle(pos, normal))
-	#the_shootay_manager.transmission_collided.connect( func(pos: Vector2):
-		#the_player.teleport( pos ))
-#
-	#the_shootay_manager.cam_ref = cam_ref
-	#the_shootay_manager.player_ref = the_player
-	#
-	#the_player.shot_a_shootay.connect( 
-		#func( pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.ShootayValues):
-			#the_shootay_manager.make_shootay.call(pos,  dir, shootay_value)
-			#$UI.shoot(shootay_value))
-	#the_player.died.connect( game_over )
-#
-	#the_player.started_dashing.connect( 
-		#func( _player: CharacterBody2D, dir: Vector2, speed: float, timer: Timer):
-			#$vfx_container.start_dash_effect(_player, dir, speed, timer))
-	#the_player.stopped_dashing.connect( func():
-			#$vfx_container.stop_dash_effect())
-	## $EnemyManager.player_ref = the_player
-#
-	#the_player.boosted.connect( func(pos: Vector2):
-		## -- make a streak along this path
-		#
-		## -- blur
-		#$PostProcessing.shockwave(pos))
-	#the_player.overload_cleared.connect( func(): $UI.clear_shootay_meter() )
-	##$UI
-#
-#func game_over():
-	## -- slow the tick rate way down for a minute, zoom in on how terrible
-	## -- you are as a player
-	## -- and restart
-	#pass
+func end_game():
+	UI.visible = true
+	$CanvasLayer/HUD.visible = false
+	$Game.visible = false
+	$Game.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)

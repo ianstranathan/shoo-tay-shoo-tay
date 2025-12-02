@@ -1,6 +1,5 @@
-[gd_scene load_steps=5 format=3 uid="uid://c0m7ana3ei5mq"]
+[gd_scene load_steps=4 format=3 uid="uid://c0m7ana3ei5mq"]
 
-[ext_resource type="Script" uid="uid://lylt0vuwbqq" path="res://vfx/transmit_mark.gd" id="1_sc260"]
 [ext_resource type="Shader" uid="uid://bsxsbrepy4omg" path="res://vfx/transmit_mark.gdshader" id="1_xocaa"]
 [ext_resource type="Texture2D" uid="uid://drnculf3qedkj" path="res://icon.svg" id="2_sc260"]
 
@@ -8,7 +7,6 @@
 shader = ExtResource("1_xocaa")
 
 [node name="TransmitMark" type="Node2D"]
-script = ExtResource("1_sc260")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_2vr6d")

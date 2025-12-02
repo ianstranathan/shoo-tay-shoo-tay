@@ -4,6 +4,7 @@ class_name Player
 
 # -- signals
 signal died
+signal overloaded
 signal boosted( pos: Vector2)
 signal shot_a_shootay( pos: Vector2, dir: Vector2, shootay_value:ShootayGlobals.ShootayValues)
 signal overload_cleared()
@@ -85,7 +86,8 @@ func _ready() -> void:
 		vel_fn = vel_fn_closure( Vector2.ZERO, 0.0, DASHING_DECL))
 	
 	# -------------------------------------------------- overload manager
-	$OverloadManager.overloaded.connect( func(): pass)
+	$OverloadManager.overloaded.connect( func():
+		emit_signal("overloaded"))
 
 	# -------------------------------------------------- charging manager
 	$ChargeManager.input_manager = input_manager
@@ -254,7 +256,10 @@ func movement_state_transition(new_movement_state: MovementStates):
 		# ----------------------------------
 
 
-#func make_invulnerable(b=true):
-	#for num in saved_masks_array:
-		#$HitboxComponent.set_collision_mask_value(num, !b)
-		#print($HitboxComponent.get_collision_mask_value(num))
+func restart():
+	# -- FIXME / FORMALIZEME
+	$PlayerSprite.material.set_shader_parameter("dmg_scale", 0.)
+	$PlayerSprite.material.set_shader_parameter("t", 0.)
+	$HealthComponent.restore_full_health()
+	$OverloadManager.clear_overload()
+	global_position = Vector2.ZERO
